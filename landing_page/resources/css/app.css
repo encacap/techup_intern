@@ -1,0 +1,657 @@
+@import "./tailwindcss";
+@import "animate.css";
+
+body {
+    @apply font-montserrat overflow-x-hidden;
+}
+
+.container {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.header {
+    @apply flex bg-background-dark text-white;
+
+    .container {
+        @apply flex items-center justify-between py-4;
+    }
+
+    &-brand {
+        @apply flex items-center pr-20 text-lg font-bold mt-px;
+
+        svg {
+            @apply block lg:hidden mr-2.5 cursor-pointer;
+        }
+    }
+
+    &-group {
+        @apply lg:flex-1 flex items-center justify-between text-sm;
+    }
+
+    &-menu {
+        @apply fixed
+        top-16
+        lg:top-0
+        left-0
+        right-0
+        bottom-0
+        z-50
+        lg:relative
+        flex
+        flex-col
+        lg:flex-row
+        items-center
+        justify-center
+        lg:justify-start
+        bg-black
+        bg-opacity-80
+        lg:bg-transparent
+        font-semibold
+        -translate-x-full
+        lg:translate-x-0;
+
+        &.active {
+            @apply translate-x-0 duration-200;
+        }
+
+        div {
+            @apply relative mx-4 py-4 my-6 lg:my-0 text-4xl lg:text-sm cursor-pointer;
+
+            &::after {
+                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary;
+                content: "";
+            }
+
+            &:hover::after {
+                @apply w-full duration-200;
+            }
+        }
+    }
+
+    &-button {
+        @apply hidden md:flex;
+
+        .btn {
+            &-primary {
+                @apply xl:mr-11 uppercase;
+
+                img {
+                    @apply ml-4;
+                }
+            }
+
+            &-transparent {
+                @apply px-11;
+            }
+        }
+    }
+}
+
+.hero {
+    @apply grid md:grid-cols-2 bg-background-dark py-4;
+
+    &-paragraph {
+        @apply order-1 xl:w-3/5 ml-10 mr-10 md:mr-0 lg:mr-10 my-10 md:my-auto xl:m-auto overflow-hidden;
+
+        &-large {
+            @apply my-7 text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white uppercase;
+
+            line-height: 50px;
+
+            @media (min-width: 1024px) {
+                line-height: 60px;
+            }
+
+            @media (min-width: 1280px) {
+                line-height: 80px;
+            }
+        }
+
+        &-button {
+            @apply flex items-center pt-8;
+
+            .btn {
+                @apply inline-block px-10;
+
+                &-primary {
+                }
+
+                &-transparent {
+                    @apply inline-block lg:ml-2.5 pl-4 lg:px-10 border-2 lg:border-primary text-primary;
+                }
+            }
+        }
+    }
+
+    &-cover {
+        @apply order-last relative mx-10 xl:mx-7 md:my-20 overflow-hidden;
+
+        height: 420px;
+
+        @media (min-width: 1024px) {
+            height: 380px;
+        }
+
+        @media (min-width: 1280px) {
+            height: 512px;
+        }
+
+        img:nth-child(1) {
+            @apply absolute z-20 h-full;
+        }
+
+        img:nth-child(2) {
+            @apply absolute z-10 right-0;
+
+            height: 240px;
+
+            @media (min-width: 1024px) {
+                height: 320px;
+            }
+
+            @media (min-width: 1280px) {
+                height: 460px;
+            }
+        }
+    }
+}
+
+.courses {
+    @apply py-28;
+
+    &-items {
+        @apply grid md:grid-cols-2 lg:grid-cols-4 mt-16 gap-9;
+    }
+
+    &-item {
+        @apply p-9;
+
+        box-shadow: 0px 13px 19px rgba(0, 0, 0, 0.07);
+
+        &-icon {
+            @apply inline-block py-6 px-5 rounded-md bg-background-secondary text-primary;
+        }
+
+        &-title {
+            @apply py-5 font-bold;
+        }
+
+        &-line {
+            @apply w-14 h-0.5 bg-primary;
+        }
+
+        &-description {
+            @apply mt-5 text-sm text-text-light line-clamp-3;
+        }
+
+        &:nth-child(2n - 1) {
+            @apply lg:mb-12;
+        }
+
+        &:nth-child(2n) {
+            @apply lg:mt-12;
+        }
+
+        &:nth-child(1) &-icon {
+            @apply bg-opacity-25;
+        }
+
+        &:nth-child(2) &-icon {
+            @apply bg-opacity-50;
+        }
+
+        &:nth-child(3) &-icon {
+            @apply bg-opacity-75;
+        }
+
+        &:hover {
+            @apply bg-primary duration-200;
+        }
+
+        &:hover &-title,
+        &:hover &-description {
+            @apply text-white;
+        }
+
+        &:hover &-line {
+            @apply bg-white;
+        }
+
+        &:hover &-icon {
+            @apply bg-white;
+        }
+    }
+}
+
+.products {
+    @apply py-28;
+
+    &-items {
+        @apply grid md:grid-cols-2 lg:grid-cols-4 mt-28 gap-7;
+    }
+
+    &-item {
+        @apply bg-gray-100 rounded-md overflow-hidden;
+    }
+
+    &-top {
+        @apply relative;
+
+        &-image {
+            @apply w-full h-60 lg:h-full object-cover object-center;
+        }
+
+        &-badge {
+            @apply absolute top-5 left-5 px-2.5 bg-danger rounded leading-6 font-semibold text-xs text-white;
+        }
+
+        &-button {
+            @apply absolute left-1/2 -translate-x-1/2 bottom-5;
+
+            & > div {
+                @apply flex mx-auto;
+            }
+
+            & > div > div {
+                @apply flex justify-center items-center w-10 h-10 rounded-full bg-white;
+
+                &:nth-child(2) {
+                    @apply mx-2.5;
+                }
+            }
+        }
+    }
+
+    &-bottom {
+        @apply px-6 pt-6 pb-9;
+
+        &-review {
+            @apply flex items-center justify-between;
+            div {
+                &:nth-child(1) {
+                    @apply font-semibold text-sm text-primary line-clamp-1;
+                }
+
+                &:nth-child(2) {
+                    @apply flex bg-background-dark rounded-full px-2 py-1 text-sm text-white;
+
+                    img {
+                        @apply mr-1;
+                    }
+                }
+            }
+        }
+
+        &-title {
+            @apply my-2.5 font-bold tracking-wide;
+        }
+
+        &-description {
+            @apply my-2.5 text-sm text-text-light;
+        }
+
+        &-sales {
+            @apply flex items-center font-bold text-sm text-text-light;
+
+            img {
+                @apply mr-2.5;
+            }
+        }
+
+        &-price {
+            @apply mt-2.5 mb-4 pt-2 pb-1 flex font-bold;
+
+            &-cost {
+                @apply text-text-muted mr-2.5;
+            }
+
+            &-discount {
+                @apply text-background-dark;
+            }
+        }
+
+        &-read {
+            @apply flex w-fit border-2 border-primary py-2.5 px-5 rounded-full text-sm font-bold text-primary cursor-pointer;
+
+            &:hover {
+                img {
+                    @apply ml-4;
+                }
+            }
+
+            img {
+                @apply ml-2.5 duration-200;
+            }
+        }
+    }
+}
+
+.popular {
+    @apply bg-background-dark py-40;
+
+    .container {
+        @apply grid grid-cols-2;
+    }
+
+    &-left {
+        @apply relative;
+
+        height: 600px;
+
+        &-rectangle {
+            @apply hidden md:block absolute top-0 right-0 z-0 w-28 h-36 bg-secondary;
+        }
+
+        &-main {
+            @apply relative md:top-8 h-full rounded-md overflow-hidden;
+
+            /* left: 86px;
+            width: calc(100% - 0px);
+            height: 506px; */
+
+            @media (min-width: 768px) {
+                left: 86px;
+                width: calc(100% - 116px);
+                height: 506px;
+            }
+
+            img {
+                @apply w-full h-full object-cover object-center;
+            }
+        }
+
+        &-secondary {
+            @apply hidden md:block absolute -bottom-8 left-0 z-20;
+        }
+    }
+
+    &-right {
+        @apply flex items-center justify-end h-full;
+
+        & > div {
+            @apply w-3/4 text-white;
+
+            h3 {
+                @apply py-9 text-4xl font-bold;
+
+                line-height: 50px;
+            }
+
+            p {
+                @apply w-3/4 text-sm leading-6;
+            }
+
+            a {
+                @apply mt-9 flex items-center text-sm font-semibold text-primary;
+
+                img {
+                    @apply ml-2.5;
+                }
+            }
+        }
+
+        &-line {
+            @apply w-24 h-2 bg-danger;
+        }
+    }
+}
+
+.pricing {
+    @apply py-28;
+
+    &-items {
+        @apply grid md:grid-cols-2 lg:grid-cols-3 gap-x-8;
+    }
+
+    &-item {
+        @apply relative mt-20 py-12 px-12;
+
+        box-shadow: 0px 13px 19px rgba(0, 0, 0, 0.07);
+
+        &:nth-child(1) {
+            @apply order-1;
+        }
+
+        &:nth-child(2) {
+            @apply order-first md:order-2;
+        }
+
+        &:nth-child(3) {
+            @apply order-3;
+        }
+    }
+
+    &-favorite {
+        @apply flex items-center justify-center w-24 h-24 rounded-full bg-background-dark;
+    }
+
+    h3 {
+        @apply uppercase py-9 text-2xl font-bold;
+    }
+
+    p {
+        @apply text-sm text-text-light;
+    }
+
+    &-price {
+        @apply my-9;
+
+        h1 {
+            @apply text-4xl text-primary font-bold;
+
+            line-height: 50px;
+        }
+
+        div {
+            @apply text-sm font-bold text-text-disabled;
+        }
+    }
+
+    .btn {
+        @apply my-9 justify-center;
+    }
+
+    &-feature {
+        @apply hidden lg:flex items-center mb-4 text-sm font-bold;
+
+        div {
+            @apply flex-shrink-0 flex items-center justify-center w-8 h-8 mr-2.5 rounded-full bg-text-muted;
+        }
+
+        &.active {
+            @apply flex;
+
+            div {
+                @apply bg-green-400;
+            }
+        }
+    }
+    &-new {
+        @apply absolute top-0 -right-8 flex justify-center items-center w-24 h-24 rounded-full bg-alert text-2xl text-white font-bold;
+    }
+}
+
+.reviews {
+    @apply grid grid-cols-2 gap-8 mt-24;
+
+    .review {
+        @apply flex flex-col items-center;
+
+        &-avatar {
+            @apply w-32 h-32 rounded-full;
+        }
+
+        &-content {
+            @apply flex flex-col items-center py-8 md:p-8;
+
+            p {
+                @apply w-4/5 text-center text-sm text-text-light;
+            }
+        }
+        &-stars {
+            @apply flex my-4;
+
+            img {
+                @apply mx-1;
+            }
+        }
+        &-info {
+            @apply text-center font-semibold;
+        }
+        &-name {
+            @apply font-bold;
+        }
+        &-career {
+            @apply text-sm text-text-light mt-2;
+        }
+    }
+}
+
+.section-header {
+    @apply text-sm;
+
+    .sub-title {
+        @apply font-bold text-primary;
+    }
+    .title {
+        @apply py-4 text-4xl font-bold;
+    }
+    .description {
+        @apply md:w-1/2 text-text-light;
+    }
+}
+
+.subscribe {
+    @apply bg-background-dark;
+
+    .container {
+        @apply flex flex-col items-center py-40;
+    }
+    &-content {
+        @apply flex flex-col items-center w-5/6 lg:w-3/5 mb-20 text-white;
+
+        h1 {
+            @apply my-4 text-4xl font-bold text-center;
+        }
+
+        h4 {
+            @apply text-sm font-bold text-primary tracking-widest;
+        }
+
+        p {
+            @apply w-4/5 text-sm text-center leading-5;
+        }
+    }
+    &-form {
+        @apply flex items-center md:w-4/5 lg:w-3/5 bg-white rounded-md overflow-hidden border-2 border-white;
+
+        input {
+            @apply flex-1 block h-full px-6 py-4 rounded-l-md outline-none ring-2 ring-inset ring-transparent focus:ring-primary;
+
+            &::-webkit-input-placeholder {
+                @apply text-text-light text-sm font-semibold;
+            }
+        }
+
+        .btn {
+            &-primary {
+                @apply block h-full py-4 px-6 font-normal rounded-l-none;
+            }
+        }
+    }
+}
+
+.footer {
+    @apply overflow-auto;
+
+    &-menu {
+        .container {
+            @apply grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 pt-14 pb-6;
+        }
+    }
+
+    &-copyright {
+        @apply bg-gray-50;
+
+        .container {
+            @apply md:flex text-center md:text-left items-center justify-between py-6;
+        }
+
+        p {
+            @apply text-sm text-text-light font-semibold;
+        }
+
+        &-social {
+            @apply flex-shrink-0 flex items-center justify-center mt-4 md:mt-0;
+
+            a:not(:first-child),
+            a:not(:last-child) {
+                @apply mx-2;
+            }
+        }
+    }
+
+    &-menu {
+        h4 {
+            @apply font-bold;
+        }
+        ul {
+            @apply mt-5 mb-8;
+
+            li {
+                @apply flex items-center py-2.5 text-sm font-semibold text-text-light;
+
+                img {
+                    @apply w-5 mr-2.5;
+                }
+            }
+
+            li:first-child {
+                @apply pt-1;
+            }
+
+            li:last-child {
+                @apply pb-1;
+            }
+        }
+    }
+}
+
+.btn {
+    @apply flex items-center px-6 py-3.5 rounded-md border-2 border-transparent text-sm font-semibold text-white;
+
+    &-primary {
+        @apply border-primary bg-primary hover:bg-opacity-60 transition-colors duration-200;
+    }
+
+    &-transparent {
+        @apply bg-transparent;
+    }
+}
+
+.shadow {
+    box-shadow: 0px 13px 19px rgba(0, 0, 0, 0.07);
+}
+
+.container {
+    max-width: calc(100% - 80px);
+    margin: 0 auto;
+}
+
+/* @media (min-width: 768px) {
+} */
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1050px;
+        margin: 0 auto;
+    }
+}

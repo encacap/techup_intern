@@ -1,7 +1,12 @@
-import { SET_TODO_INPUT, ADD_TODO, FOCUS_TODO_INPUT, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
+import { SET_TODO_INPUT, ADD_TODO, FOCUS_TODO_INPUT, SET_TODOS_FILTER, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
 
 export const setTodoInput = (payload) => ({
     type: SET_TODO_INPUT,
+    payload,
+});
+
+export const setTodosFilter = (payload) => ({
+    type: SET_TODOS_FILTER,
     payload,
 });
 

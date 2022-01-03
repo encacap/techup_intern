@@ -1,4 +1,4 @@
-import { SET_TODO_INPUT, ADD_TODO, FOCUS_TODO_INPUT, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
+import { SET_TODO_INPUT, ADD_TODO, SET_TODOS_FILTER, FOCUS_TODO_INPUT, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
 
 const storage = (name) => {
     return {
@@ -16,6 +16,7 @@ const initState = {
     todoInput: "",
     todos: storage("todos").get() || [],
     isInputFocused: false,
+    todosFilter: "all",
 };
 
 const reducer = (state, action) => {
@@ -26,18 +27,24 @@ const reducer = (state, action) => {
                 todoInput: action.payload,
             };
         }
+        case FOCUS_TODO_INPUT: {
+            return {
+                ...state,
+                isInputFocused: action.payload,
+            };
+        }
+        case SET_TODOS_FILTER: {
+            return {
+                ...state,
+                todosFilter: action.payload,
+            };
+        }
         case ADD_TODO: {
             const newTodos = [...state.todos, action.payload];
             storage("todos").set(newTodos);
             return {
                 ...state,
                 todos: newTodos,
-            };
-        }
-        case FOCUS_TODO_INPUT: {
-            return {
-                ...state,
-                isInputFocused: action.payload,
             };
         }
         case MARK_TODO_DONE: {

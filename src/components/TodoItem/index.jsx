@@ -1,11 +1,11 @@
 const TodoItem = ({ todo, isFinal, onMarkDone, onRemove }) => {
     return (
-        <li className={`flex justify-between py-3 ${isFinal && "border-b-2 border-gray-100"}`}>
+        <li className={`flex justify-between py-4 ${isFinal && "border-b-2 border-gray-100"}`}>
             <div className="flex items-center">
                 <input
                     type="checkbox"
                     name="complete"
-                    className="mr-3 mt-0.5"
+                    className="mr-5 mt-0.5"
                     onChange={() => onMarkDone(todo.id)}
                     checked={todo.isDone}
                 />

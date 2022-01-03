@@ -22,7 +22,7 @@ const TodoList = () => {
                     {todos.map((todo, index) => (
                         <TodoItem
                             todo={todo}
-                            isFinal={index === todos.length - 1}
+                            isFinal={index !== todos.length - 1}
                             onMarkDone={handleMarkDone}
                             onRemove={handleRemove}
                             key={todo.id}

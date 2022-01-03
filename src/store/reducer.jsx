@@ -1,8 +1,20 @@
 import { SET_TODO_INPUT, ADD_TODO, FOCUS_TODO_INPUT, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
 
+const storage = (name) => {
+    return {
+        get: () => {
+            const json = localStorage.getItem(name);
+            return json ? JSON.parse(json) : undefined;
+        },
+        set: (value) => {
+            localStorage.setItem(name, JSON.stringify(value));
+        },
+    };
+};
+
 const initState = {
     todoInput: "",
-    todos: [],
+    todos: storage("todos").get() || [],
     isInputFocused: false,
 };
 
@@ -15,9 +27,11 @@ const reducer = (state, action) => {
             };
         }
         case ADD_TODO: {
+            const newTodos = [...state.todos, action.payload];
+            storage("todos").set(newTodos);
             return {
                 ...state,
-                todos: [...state.todos, action.payload],
+                todos: newTodos,
             };
         }
         case FOCUS_TODO_INPUT: {
@@ -37,6 +51,7 @@ const reducer = (state, action) => {
                 }
                 return todo;
             });
+            storage("todos").set(todos);
             return {
                 ...state,
                 todos: [...todos],
@@ -45,6 +60,7 @@ const reducer = (state, action) => {
         case REMOVE_TODO: {
             const todoId = action.payload;
             const newTodos = state.todos.filter((todo) => todo.id !== todoId);
+            storage("todos").set(newTodos);
             return {
                 ...state,
                 todos: [...newTodos],

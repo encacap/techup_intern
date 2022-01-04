@@ -1,9 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useStore } from "../../store/";
-import { actions } from "../../store";
 
 const TodoNavBar = () => {
-    const [{ todosFilter, todos }, dispatch] = useStore();
+    const [{ todos }] = useStore();
+    const validFilters = ["all", "unfinished", "finished"];
+    let { filter } = useParams();
+
+    if (!validFilters.includes(filter)) {
+        filter = "all";
+    }
+
     const allTodos = todos.length;
     let unfinishedTodos = 0,
         finishedTodos = 0;
@@ -13,21 +19,21 @@ const TodoNavBar = () => {
     });
     return (
         <div className="flex items-center mt-10 px-6 border-2 border-b-0 border-gray-100 rounded-t-md font-semibold">
-            <Link to="/" className="mr-6" onClick={() => dispatch(actions.setTodosFilter("all"))}>
-                <div className={`px-3 py-4 ${todosFilter === "all" && "text-blue-500"}`}>All ({allTodos})</div>
-                <div className={`w-full h-1 ${todosFilter === "all" && "bg-blue-500"} rounded-t-md`}></div>
+            <Link to="/todos/all" className="mr-6">
+                <div className={`px-3 py-4 ${filter === "all" && "text-blue-500"}`}>All ({allTodos})</div>
+                <div className={`w-full h-1 ${filter === "all" && "bg-blue-500"} rounded-t-md`}></div>
             </Link>
-            <Link to="/unfinished" className="mr-6" onClick={() => dispatch(actions.setTodosFilter("unfinished"))}>
-                <div className={`px-3 py-4 ${todosFilter === "unfinished" && "text-blue-500"}`}>
+            <Link to="/todos/unfinished" className="mr-6">
+                <div className={`px-3 py-4 ${filter === "unfinished" && "text-blue-500"}`}>
                     Unfinished ({unfinishedTodos})
                 </div>
-                <div className={`w-full h-1 ${todosFilter === "unfinished" && "bg-blue-500"} rounded-t-md`}></div>
+                <div className={`w-full h-1 ${filter === "unfinished" && "bg-blue-500"} rounded-t-md`}></div>
             </Link>
-            <Link to="/finished" className="mr-6" onClick={() => dispatch(actions.setTodosFilter("finished"))}>
-                <div className={`px-3 py-4 ${todosFilter === "finished" && "text-blue-500"}`}>
+            <Link to="/todos/finished" className="mr-6">
+                <div className={`px-3 py-4 ${filter === "finished" && "text-blue-500"}`}>
                     Finished ({finishedTodos})
                 </div>
-                <div className={`w-full h-1 ${todosFilter === "finished" && "bg-blue-500"} rounded-t-md`}></div>
+                <div className={`w-full h-1 ${filter === "finished" && "bg-blue-500"} rounded-t-md`}></div>
             </Link>
         </div>
     );

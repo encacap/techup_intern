@@ -1,9 +1,11 @@
+import { useParams } from "react-router-dom";
 import { useStore } from "../../store/";
 import { actions } from "../../store";
 import TodoItem from "../TodoItem";
 
-const TodoList = ({ filter }) => {
+const TodoList = () => {
     const [state, dispatch] = useStore();
+    let { filter } = useParams();
     let todos = state.todos.filter((todo) => {
         if (!filter || filter === "all") {
             return todo;

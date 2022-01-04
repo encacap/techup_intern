@@ -1,0 +1,43 @@
+{
+    "name": "school_leader",
+    "version": "1.0.0",
+    "description": "TECHUP School Leader Template",
+    "main": "index.js",
+    "scripts": {
+        "postcss": "postcss ./resources/css/app.css --dir ./assets/css/ -m --ext .min.css",
+        "watch:css": "cross-env NODE_ENV=development && npm run postcss -- -w",
+        "webpack": "webpack --config ./webpack.config.js",
+        "watch:js": "cross-env NODE_ENV=development && npm run webpack -- -w"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/encacap/techup_school_leader.git"
+    },
+    "keywords": [
+        "encacap",
+        "nguyen",
+        "khac",
+        "khanh"
+    ],
+    "author": "Nguyen Khac Khanh (Encacap)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/encacap/techup_school_leader/issues"
+    },
+    "homepage": "https://github.com/encacap/techup_school_leader#readme",
+    "dependencies": {
+        "@tailwindcss/line-clamp": "^0.3.0",
+        "animate.css": "^4.1.1",
+        "autoprefixer": "^10.4.0",
+        "cross-env": "^7.0.3",
+        "cssnano": "^5.0.14",
+        "postcss": "^8.4.5",
+        "postcss-cli": "^9.1.0",
+        "postcss-import": "^14.0.2",
+        "postcss-nested": "^5.0.6",
+        "tailwindcss": "^3.0.7",
+        "webpack": "^5.65.0",
+        "webpack-cli": "^4.9.1",
+        "wow.js": "^1.2.2"
+    }
+}

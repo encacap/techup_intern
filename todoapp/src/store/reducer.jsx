@@ -1,4 +1,13 @@
-import { SET_TODO_INPUT, ADD_TODO, SET_TODOS_FILTER, FOCUS_TODO_INPUT, MARK_TODO_DONE, REMOVE_TODO } from "./constants";
+import {
+    SET_TODO_INPUT,
+    ADD_TODO,
+    SET_TODOS_FILTER,
+    FOCUS_TODO_INPUT,
+    MARK_TODO_DONE,
+    REMOVE_TODO,
+    SET_EDITING_TODO,
+    EDIT_TODO,
+} from "./constants";
 
 const storage = (name) => {
     return {
@@ -17,6 +26,7 @@ const initState = {
     todos: storage("todos").get() || [],
     isInputFocused: false,
     todosFilter: "all",
+    editingTodoId: undefined,
 };
 
 const reducer = (state, action) => {
@@ -71,6 +81,30 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 todos: [...newTodos],
+            };
+        }
+        case SET_EDITING_TODO: {
+            return {
+                ...state,
+                editingTodoId: action.payload,
+            };
+        }
+        case EDIT_TODO: {
+            const { todoId, newTodo } = action.payload;
+            console.log(todoId, newTodo);
+            const todos = state.todos.map((todo) => {
+                if (todo.id === todoId) {
+                    return {
+                        ...todo,
+                        job: newTodo,
+                    };
+                }
+                return todo;
+            });
+            storage("todos").set(todos);
+            return {
+                ...state,
+                todos: [...todos],
             };
         }
         default:

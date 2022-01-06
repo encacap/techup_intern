@@ -1,39 +1,57 @@
 import { useRef } from "react";
-import { useStore } from "../../store/";
-import { actions } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../actions/todo";
 
 const TodoForm = () => {
-    const [{ todoInput, isInputFocused }, dispatch] = useStore();
+    const { newTodo, isNewInputFocused } = useSelector((state) => state.todo);
+    const dispatch = useDispatch();
 
     const inputRef = useRef();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log({
+            id: Date.now(),
+            job: newTodo,
+            isDone: false,
+        });
         dispatch(
-            actions.addTodo({
+            actions.addNewTodo({
                 id: Date.now(),
-                job: todoInput,
+                job: newTodo,
                 isDone: false,
             })
         );
-        dispatch(actions.setTodoInput(""));
+        dispatch(actions.setNewTodo(""));
 
         inputRef.current.focus();
     };
 
+    const handleInput = ({ target }) => {
+        dispatch(actions.setNewTodo(target.value));
+    };
+
+    const handleFocus = () => {
+        dispatch(actions.setNewInputStatus(true));
+    };
+
+    const handleBlur = () => {
+        dispatch(actions.setNewInputStatus(false));
+    };
+
     return (
         <form
-            className={`border-2 ${isInputFocused ? "border-blue-500" : "border-gray-100"} rounded-md flex`}
+            className={`border-2 ${isNewInputFocused ? "border-blue-500" : "border-gray-100"} rounded-md flex`}
             onSubmit={handleSubmit}
         >
             <input
                 type="text"
                 placeholder="What do you want?"
                 className="w-96 px-6 py-4 rounded-l-md outline-none"
-                value={todoInput}
-                onInput={(e) => dispatch(actions.setTodoInput(e.target.value))}
-                onFocus={() => dispatch(actions.focusTodoInput(true))}
-                onBlur={() => dispatch(actions.focusTodoInput(false))}
+                value={newTodo}
+                onInput={handleInput}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 ref={inputRef}
             />
             <button

@@ -1,16 +1,15 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useStore } from "../../store/";
-import { actions } from "../../store";
+import * as actions from "../../actions/todo";
 import TodoItem from "../TodoItem";
 
 const TodoList = () => {
-    const [state, dispatch] = useStore();
-    const { editingTodoId } = state;
-    const [editingTodoInput, setEditingTodoInput] = useState(null);
+    const { editingTodoId, editingTodoValue, todos } = useSelector((state) => state.todo);
+    const dispatch = useDispatch();
 
-    let { filter } = useParams();
-    let todos = state.todos.filter((todo) => {
+    const { filter = "all" } = useParams();
+    const filteredTodos = todos.filter((todo) => {
         if (!filter || filter === "all") {
             return todo;
         } else if (filter === "unfinished") {
@@ -22,12 +21,14 @@ const TodoList = () => {
     useEffect(() => {
         if (!editingTodoId) return;
         const editingTodoElement = document.querySelector(`#todo_${editingTodoId}`);
+        if (!editingTodoElement) return;
         const editingInput = editingTodoElement.querySelector("input[name=edit_todo]");
         editingInput.focus();
     }, [editingTodoId]);
 
     const handleMarkDone = (todoId) => {
-        dispatch(actions.markTodoDone(todoId));
+        const selectedTodo = todos.find((todo) => todo.id === todoId);
+        dispatch(actions.markTodoDone(todoId, !selectedTodo.isDone));
     };
 
     const handleRemove = (todoId) => {
@@ -35,33 +36,43 @@ const TodoList = () => {
     };
 
     const handleDoubleClick = (todoId) => {
-        dispatch(actions.setEditingTodo(todoId));
+        dispatch(actions.setEditingTodoId(todoId));
     };
 
     const handleEdit = (e) => {
         e.preventDefault();
 
-        dispatch(actions.editTodo(editingTodoId, editingTodoInput));
-        dispatch(actions.setEditingTodo(null));
+        dispatch(actions.editTodo(editingTodoId, editingTodoValue));
+        dispatch(actions.setEditingTodoId(null));
+        dispatch(actions.setEditingTodoValue(""));
+    };
+
+    const handleEditing = ({ target }) => {
+        dispatch(actions.setEditingTodoValue(target.value));
+    };
+
+    const handleCancelEdit = () => {
+        dispatch(actions.setEditingTodoId(null));
     };
 
     return (
         <div>
-            {todos.length === 0 ? (
+            {filteredTodos.length === 0 ? (
                 <div className="px-4 py-10 rounded-b-md bg-gray-100 text-gray-400 text-center">Nothing here =((</div>
             ) : (
                 <ul className="list-none border-2 border-gray-100 rounded-b-md px-6 select-none">
-                    {todos.map((todo, index) => (
+                    {filteredTodos.map((todo, index) => (
                         <TodoItem
                             todo={todo}
-                            isFinal={index !== todos.length - 1}
+                            isFinal={index !== filteredTodos.length - 1}
                             isEditing={todo.id === editingTodoId}
-                            value={editingTodoInput}
-                            onEditing={setEditingTodoInput}
+                            value={editingTodoValue}
+                            onEditing={handleEditing}
                             onMarkDone={handleMarkDone}
                             onRemove={handleRemove}
                             onDoubleClick={handleDoubleClick}
                             onEdit={handleEdit}
+                            onCancelEdit={handleCancelEdit}
                             key={todo.id}
                         />
                     ))}

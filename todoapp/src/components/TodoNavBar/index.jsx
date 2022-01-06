@@ -1,8 +1,8 @@
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { useStore } from "../../store/";
 
 const TodoNavBar = () => {
-    const [{ todos }] = useStore();
+    const { todos } = useSelector((state) => state.todo);
     const validFilters = ["all", "unfinished", "finished"];
     let { filter } = useParams();
 

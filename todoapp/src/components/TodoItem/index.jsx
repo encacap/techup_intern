@@ -1,4 +1,15 @@
-const TodoItem = ({ todo, isFinal, isEditing, value, onMarkDone, onRemove, onDoubleClick, onEditing, onEdit }) => {
+const TodoItem = ({
+    todo,
+    isFinal,
+    isEditing,
+    value,
+    onMarkDone,
+    onRemove,
+    onDoubleClick,
+    onEditing,
+    onEdit,
+    onCancelEdit,
+}) => {
     return (
         <li
             className={`flex justify-between py-4 ${isFinal && "border-b-2 border-gray-100"}`}
@@ -22,7 +33,8 @@ const TodoItem = ({ todo, isFinal, isEditing, value, onMarkDone, onRemove, onDou
                         name="edit_todo"
                         placeholder="What are you working on?"
                         value={value || todo.job}
-                        onChange={(e) => onEditing(e.target.value)}
+                        onChange={onEditing}
+                        onBlur={onCancelEdit}
                         className="border-none outline-none"
                     />
                 </form>

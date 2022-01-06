@@ -1,0 +1,9 @@
+export const SET_NEW_TODO = "SET_NEW_TODO";
+export const ADD_NEW_TODO = "ADD_NEW_TODO";
+export const MARK_TODO_DONE = "MARK_TODO_DONE";
+export const EDIT_TODO = "EDIT_TODO";
+export const REMOVE_TODO = "REMOVE_TODO";
+export const SET_EDITING_TODO = "SET_EDITING_TODO";
+export const SET_NEW_INPUT_STATUS = "SET_NEW_INPUT_STATUS";
+export const SET_EDITING_TODO_ID = "SET_EDITING_TODO_ID";
+export const SET_EDITING_TODO_VALUE = "SET_EDITING_TODO_VALUE";

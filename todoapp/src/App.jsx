@@ -1,6 +1,6 @@
-import { Routes, Route } from "react-router-dom";
-import TodoForm from "./components/TodoForm";
+import { Route, Routes } from "react-router-dom";
 import TodoBody from "./components/TodoBody";
+import TodoForm from "./components/TodoForm";
 
 function App() {
     return (

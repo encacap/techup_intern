@@ -1,25 +1,21 @@
-import { Route, Routes } from "react-router-dom";
-import TodoBody from "./components/TodoBody";
-import TodoForm from "./components/TodoForm";
+import { useSelector } from "react-redux";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
 
 function App() {
+    const lists = useSelector((state) => state.todo.lists);
+    const defaultListId = lists.find((list) => list.isDefault)?.id || lists[0].id;
+
     return (
-        <div className="w-screen h-screen flex">
-            <div className="flex m-auto border-2 border-gray-100 rounded-md">
-                {/* <div className="border-r-2 border-gray-100">
-                    <div>Tất cả</div>
-                </div> */}
-                <div className="p-10">
-                    <TodoForm />
-                    <Routes>
-                        <Route path="/" element={<TodoBody />} />
-                        <Route path="todos" element={<TodoBody />}>
-                            <Route path=":filter" element={<TodoBody />} />
-                        </Route>
-                    </Routes>
-                </div>
-            </div>
-        </div>
+        <>
+            <Routes>
+                <Route path="/" element={<Navigate to={`/todos/${defaultListId}/all`} />} />
+                <Route path="/todos/*" element={<Home />}>
+                    <Route path=":listId/*" element={<Home />} />
+                    <Route path="*" element={<Home />} />
+                </Route>
+            </Routes>
+        </>
     );
 }
 

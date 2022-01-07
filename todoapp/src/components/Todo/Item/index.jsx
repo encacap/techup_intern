@@ -32,7 +32,7 @@ const TodoItem = ({
                         type="text"
                         name="edit_todo"
                         placeholder="What are you working on?"
-                        value={value || todo.job}
+                        value={value !== null ? value : todo.job}
                         onChange={onEditing}
                         onBlur={onCancelEdit}
                         className="border-none outline-none"

@@ -1,25 +1,24 @@
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import * as actions from "../../actions/todo";
+import { useParams } from "react-router-dom";
+import * as actions from "../../../actions/todo";
 
 const TodoForm = () => {
     const { newTodo, isNewInputFocused } = useSelector((state) => state.todo);
     const dispatch = useDispatch();
 
+    const { listId } = useParams();
+
     const inputRef = useRef();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({
-            id: Date.now(),
-            job: newTodo,
-            isDone: false,
-        });
         dispatch(
             actions.addNewTodo({
                 id: Date.now(),
                 job: newTodo,
                 isDone: false,
+                listId,
             })
         );
         dispatch(actions.setNewTodo(""));

@@ -1,22 +1,27 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import * as actions from "../../actions/todo";
-import TodoItem from "../TodoItem";
+import * as actions from "../../../actions/todo";
+import TodoItem from "../Item";
 
 const TodoList = () => {
     const { editingTodoId, editingTodoValue, todos } = useSelector((state) => state.todo);
     const dispatch = useDispatch();
 
-    const { filter = "all" } = useParams();
-    const filteredTodos = todos.filter((todo) => {
-        if (!filter || filter === "all") {
-            return todo;
-        } else if (filter === "unfinished") {
-            return !todo.isDone;
-        }
-        return todo.isDone;
-    });
+    const { filter = "all", listId } = useParams();
+    const filteredTodos = todos
+        .filter((todo) => {
+            if (listId === "220400") return true;
+            return listId === todo.listId;
+        })
+        .filter((todo) => {
+            if (!filter || filter === "all") {
+                return todo;
+            } else if (filter === "unfinished") {
+                return !todo.isDone;
+            }
+            return todo.isDone;
+        });
 
     useEffect(() => {
         if (!editingTodoId) return;
@@ -44,7 +49,7 @@ const TodoList = () => {
 
         dispatch(actions.editTodo(editingTodoId, editingTodoValue));
         dispatch(actions.setEditingTodoId(null));
-        dispatch(actions.setEditingTodoValue(""));
+        dispatch(actions.setEditingTodoValue(null));
     };
 
     const handleEditing = ({ target }) => {

@@ -1,11 +1,15 @@
 import {
+    ADD_NEW_LIST,
     ADD_NEW_TODO,
     EDIT_TODO,
     MARK_TODO_DONE,
+    REMOVE_LIST,
     REMOVE_TODO,
+    SET_ADD_LIST_FORM_STATUS,
     SET_EDITING_TODO_ID,
     SET_EDITING_TODO_VALUE,
     SET_NEW_INPUT_STATUS,
+    SET_NEW_LIST,
     SET_NEW_TODO,
 } from "../constants/todo";
 
@@ -39,7 +43,16 @@ const initialState = {
     newTodo: "",
     isNewInputFocused: false,
     editingTodoId: null,
-    editingTodoValue: "",
+    editingTodoValue: null,
+    newList: "",
+    isShowAddListForm: false,
+    lists: storage.get("lists") || [
+        {
+            id: 220400,
+            name: "Tất cả công việc",
+            isDefault: true,
+        },
+    ],
 };
 
 const todoReducer = (state = initialState, action) => {
@@ -47,6 +60,10 @@ const todoReducer = (state = initialState, action) => {
 
     const saveTodos = (data) => {
         storage.set("todos", data);
+    };
+
+    const saveLists = (data) => {
+        storage.set("lists", data);
     };
 
     switch (type) {
@@ -130,14 +147,52 @@ const todoReducer = (state = initialState, action) => {
         case SET_EDITING_TODO_ID: {
             return {
                 ...state,
-                editingTodoId: action.payload,
+                editingTodoId: payload,
             };
         }
 
         case SET_EDITING_TODO_VALUE: {
             return {
                 ...state,
-                editingTodoValue: action.payload,
+                editingTodoValue: payload,
+            };
+        }
+
+        case SET_NEW_LIST: {
+            return {
+                ...state,
+                newList: payload,
+            };
+        }
+
+        case ADD_NEW_LIST: {
+            const newLists = [...state.lists, payload];
+
+            saveLists(newLists);
+
+            return {
+                ...state,
+                lists: newLists,
+            };
+        }
+
+        case SET_ADD_LIST_FORM_STATUS: {
+            return {
+                ...state,
+                isShowAddListForm: payload,
+            };
+        }
+
+        case REMOVE_LIST: {
+            const removedListId = action.payload;
+            const newLists = state.lists.filter((list) => list.id !== removedListId);
+            const newTodos = state.todos.filter((todo) => todo.listId !== removedListId);
+            saveLists(newLists);
+            saveTodos(newTodos);
+            return {
+                ...state,
+                lists: newLists,
+                todos: newTodos,
             };
         }
 

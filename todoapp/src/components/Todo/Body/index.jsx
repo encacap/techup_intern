@@ -1,5 +1,5 @@
-import TodoNavBar from "../TodoNavBar";
-import TodoList from "../TodoList";
+import TodoList from "../List";
+import TodoNavBar from "../NavBar";
 
 const TodoBody = () => {
     return (

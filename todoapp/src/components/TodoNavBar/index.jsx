@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
@@ -9,6 +10,18 @@ const TodoNavBar = () => {
     if (!validFilters.includes(filter)) {
         filter = "all";
     }
+
+    useEffect(() => {
+        const filterTitles = {
+            all: "All",
+            unfinished: "Unfinished",
+            finished: "Finished",
+        };
+
+        const title = `${filterTitles[filter]} - TodoApp - Khanh Nguyen`;
+
+        window.document.title = title;
+    }, [filter]);
 
     const allTodos = todos.length;
     let unfinishedTodos = 0,

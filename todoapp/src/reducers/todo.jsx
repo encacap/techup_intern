@@ -1,16 +1,19 @@
 import {
     ADD_NEW_LIST,
     ADD_NEW_TODO,
+    EDIT_LIST,
     EDIT_TODO,
     MARK_TODO_DONE,
     REMOVE_LIST,
     REMOVE_TODO,
     SET_ADD_LIST_FORM_STATUS,
+    SET_EDITING_LIST,
     SET_EDITING_TODO_ID,
     SET_EDITING_TODO_VALUE,
     SET_NEW_INPUT_STATUS,
     SET_NEW_LIST,
     SET_NEW_TODO,
+    SET_SELECTED_LIST,
 } from "../constants/todo";
 
 const storage = (() => {
@@ -48,11 +51,13 @@ const initialState = {
     isShowAddListForm: false,
     lists: storage.get("lists") || [
         {
-            id: 220400,
+            id: "220400",
             name: "Tất cả công việc",
             isDefault: true,
         },
     ],
+    selectedListId: null,
+    editingList: null,
 };
 
 const todoReducer = (state = initialState, action) => {
@@ -183,6 +188,24 @@ const todoReducer = (state = initialState, action) => {
             };
         }
 
+        case EDIT_LIST: {
+            const { id: editedListId, name: newName } = payload;
+            const newLists = state.lists.map((list) => {
+                if (list.id === editedListId) {
+                    return {
+                        ...list,
+                        name: newName,
+                    };
+                }
+                return list;
+            });
+            saveLists(newLists);
+            return {
+                ...state,
+                lists: newLists,
+            };
+        }
+
         case REMOVE_LIST: {
             const removedListId = action.payload;
             const newLists = state.lists.filter((list) => list.id !== removedListId);
@@ -193,6 +216,20 @@ const todoReducer = (state = initialState, action) => {
                 ...state,
                 lists: newLists,
                 todos: newTodos,
+            };
+        }
+
+        case SET_SELECTED_LIST: {
+            return {
+                ...state,
+                selectedListId: payload,
+            };
+        }
+
+        case SET_EDITING_LIST: {
+            return {
+                ...state,
+                editingList: payload,
             };
         }
 

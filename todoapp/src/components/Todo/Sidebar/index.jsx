@@ -7,7 +7,7 @@ import * as todoActions from "../../../actions/todo";
 import styles from "./Sidebar.module.scss";
 
 const Sidebar = () => {
-    const { newList, lists, isShowAddListForm } = useSelector((state) => state.todo);
+    const { newList, lists, isShowAddListForm, selectedListId, editingList } = useSelector((state) => state.todo);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -21,6 +21,14 @@ const Sidebar = () => {
             addListFormInput.focus();
         }
     }, [isShowAddListForm]);
+
+    useEffect(() => {
+        if (!selectedListId) return;
+        const shownForm = document.querySelector(".editListForm");
+        if (shownForm) {
+            shownForm.querySelector("input").focus();
+        }
+    }, [selectedListId]);
 
     const handleNewListChange = ({ target }) => {
         dispatch(todoActions.setNewList(target.value));
@@ -46,7 +54,23 @@ const Sidebar = () => {
         dispatch(todoActions.setAddListFormStatus(false));
     };
 
-    const handleEditList = (listId) => {};
+    const handleInputEditList = (e, listId) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        dispatch(todoActions.setSelectedList(listId));
+    };
+
+    const handleSubmitEditList = (e) => {
+        e.preventDefault();
+
+        if (editingList) {
+            dispatch(todoActions.editList(listId, editingList));
+        }
+
+        dispatch(todoActions.setSelectedList(null));
+        dispatch(todoActions.setEditingList(null));
+    };
 
     const handleRemoveList = (e, selectedId) => {
         e.preventDefault();
@@ -82,20 +106,44 @@ const Sidebar = () => {
                             })}
                             key={list.id}
                         >
-                            <div className="flex-1">{list.name}</div>
-                            <div className="absolute right-0 top-2.5 hidden group-hover:flex items-center bg-white text-gray-400 font-normal">
-                                <div className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200">
-                                    Edit
-                                </div>
-                                {!list.isDefault && (
-                                    <div
-                                        className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
-                                        onClick={(e) => handleRemoveList(e, list.id)}
+                            {selectedListId === String(list.id) ? (
+                                <form action="" className="editListForm relative" onSubmit={handleSubmitEditList}>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter new name..."
+                                        value={editingList || list.name}
+                                        onChange={(e) => dispatch(todoActions.setEditingList(e.target.value))}
+                                        onBlur={handleSubmitEditList}
+                                        className="editingList outline-none bg-gray-100 w-full"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="absolute right-0 bg-blue-500 rounded-md px-2 py-1 font-semibold text-xs text-white"
                                     >
-                                        Delete
+                                        Change
+                                    </button>
+                                </form>
+                            ) : (
+                                <>
+                                    <div className="flex-1">{list.name}</div>
+                                    <div className="absolute right-0 top-2.5 hidden group-hover:flex items-center bg-white text-gray-400 font-normal">
+                                        <div
+                                            className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                            onClick={(e) => handleInputEditList(e, list.id)}
+                                        >
+                                            Edit
+                                        </div>
+                                        {!list.isDefault && (
+                                            <div
+                                                className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                                onClick={(e) => handleRemoveList(e, list.id)}
+                                            >
+                                                Delete
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
+                                </>
+                            )}
                         </Link>
                     ))}
                     {isShowAddListForm && (

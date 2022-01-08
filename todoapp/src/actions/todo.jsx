@@ -7,11 +7,13 @@ import {
     REMOVE_LIST,
     REMOVE_TODO,
     SET_ADD_LIST_FORM_STATUS,
+    SET_EDITING_LIST,
     SET_EDITING_TODO_ID,
     SET_EDITING_TODO_VALUE,
     SET_NEW_INPUT_STATUS,
     SET_NEW_LIST,
     SET_NEW_TODO,
+    SET_SELECTED_LIST,
 } from "../constants/todo";
 
 export const setNewTodo = (newTodo) => ({
@@ -86,4 +88,14 @@ export const editList = (listId, newName) => ({
 export const removeList = (listId) => ({
     type: REMOVE_LIST,
     payload: listId,
+});
+
+export const setSelectedList = (listId) => ({
+    type: SET_SELECTED_LIST,
+    payload: listId,
+});
+
+export const setEditingList = (newName) => ({
+    type: SET_EDITING_LIST,
+    payload: newName,
 });

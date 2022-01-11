@@ -3,7 +3,7 @@ const path = require("path");
 const Joi = require("joi");
 
 dotenv.config({
-    path: path.join(__dirname, `../../.${process.env.NODE_ENV}.env`),
+    path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`),
 });
 
 const envVarsSchema = Joi.object()
@@ -50,7 +50,7 @@ module.exports = {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
     mongoose: {
-        url: envVars.MONGODB_URL + (envVars.NODE_ENV === "test" ? "-test" : ""),
+        url: envVars.MONGODB_URL,
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,

@@ -19,6 +19,7 @@ describe("Auth", () => {
     const registerRoute = "/v1/auth/register";
     const loginRoute = "/v1/auth/login";
     const logoutRoute = "/v1/auth/logout";
+    const refreshTokensRoute = "/v1/auth/refresh-tokens";
 
     describe(`POST ${registerRoute}`, () => {
         let newUser = {};
@@ -204,6 +205,55 @@ describe("Auth", () => {
                 .post(logoutRoute)
                 .send({ refreshToken })
                 .expect(httpStatus.NOT_FOUND);
+        });
+    });
+
+    describe(`POST ${refreshTokensRoute}`, () => {
+        test("Should return 200 and new tokens if request is OK", async () => {
+            await insertUsers([userOne]);
+
+            const expires = dayjs().add(
+                configs.jwt.refreshExpirationDays,
+                "days"
+            );
+
+            const refreshToken = tokenService.generateToken(
+                userOne._id,
+                expires,
+                tokenTypes.REFRESH
+            );
+
+            await tokenService.saveToken(
+                refreshToken,
+                userOne._id,
+                expires,
+                tokenTypes.REFRESH
+            );
+
+            const res = await request(app)
+                .post(refreshTokensRoute)
+                .send({ refreshToken });
+
+            expect(res.status).toBe(httpStatus.OK);
+            expect(res.body).toEqual({
+                access: {
+                    token: expect.anything(),
+                    expires: expect.anything(),
+                },
+                refresh: {
+                    token: expect.anything(),
+                    expires: expect.anything(),
+                },
+            });
+        });
+
+        test("Should return 401 if refreshToken is invalid", async () => {
+            const refreshToken = "invalid-refresh-token";
+
+            await request(app)
+                .post(refreshTokensRoute)
+                .send({ refreshToken })
+                .expect(httpStatus.UNAUTHORIZED);
         });
     });
 });

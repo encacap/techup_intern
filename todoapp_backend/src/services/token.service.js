@@ -40,12 +40,31 @@ const verifyToken = async (token, type) => {
 };
 
 const generateAuthTokens = async (user) => {
-    const accessTokenExpires = dayjs().add(config.jwt.accessExpirationMinutes, "minutes");
-    const accessToken = generateToken(user.id, accessTokenExpires, tokenTypes.ACCESS);
+    const accessTokenExpires = dayjs().add(
+        config.jwt.accessExpirationMinutes,
+        "minutes"
+    );
+    const accessToken = generateToken(
+        user.id,
+        accessTokenExpires,
+        tokenTypes.ACCESS
+    );
 
-    const refreshTokenExpires = dayjs().add(config.jwt.refreshExpirationDays, "days");
-    const refreshToken = generateToken(user.id, refreshTokenExpires, tokenTypes.REFRESH);
-    await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
+    const refreshTokenExpires = dayjs().add(
+        config.jwt.refreshExpirationDays,
+        "days"
+    );
+    const refreshToken = generateToken(
+        user.id,
+        refreshTokenExpires,
+        tokenTypes.REFRESH
+    );
+    await saveToken(
+        refreshToken,
+        user.id,
+        refreshTokenExpires,
+        tokenTypes.REFRESH
+    );
 
     return {
         access: {

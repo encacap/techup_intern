@@ -234,10 +234,6 @@ const todoReducer = (state = initialState, action) => {
         }
 
         default: {
-            const { type } = action;
-            if (!type.includes("@@")) {
-                console.warn(`Action '${action.type}' is invalid! (on todoReducer)`);
-            }
             return state;
         }
     }

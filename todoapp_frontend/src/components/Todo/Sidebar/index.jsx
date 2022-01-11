@@ -4,10 +4,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as todoActions from "../../../actions/todo";
+import * as userActions from "../../../actions/user";
+import request from "../../../utils/request";
 import styles from "./Sidebar.module.scss";
 
 const Sidebar = () => {
     const { newList, lists, isShowAddListForm, selectedListId, editingList } = useSelector((state) => state.todo);
+    const { user, refreshToken } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -84,6 +87,17 @@ const Sidebar = () => {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+            await request.post("auth/logout", { refreshToken: refreshToken.token });
+        } catch (error) {
+            console.log(error.response.data);
+        }
+        dispatch(userActions.setUser({}));
+        dispatch(userActions.setAccessToken(""));
+        dispatch(userActions.setRefreshToken(""));
+    };
+
     return (
         <div className="w-82 border-r-2 border-gray-100 p-10">
             <div className="flex border-2 border-transparent">
@@ -91,9 +105,15 @@ const Sidebar = () => {
                     <User className="w-10" />
                 </div>
                 <div className="flex flex-col justify-center ml-5">
-                    <div className="font-semibold">Khanh Nguyen</div>
-                    <div className="mt-1 text-sm text-gray-400">encacap@encacap.com</div>
+                    <div className="font-semibold">{user.name}</div>
+                    <div className="mt-1 text-sm text-gray-400">{user.email}</div>
                 </div>
+            </div>
+            <div
+                className="flex items-center justify-center mt-4 border-2 border-gray-100 hover:border-blue-500 rounded-md px-4 py-2 text-sm hover:text-blue-500 font-semibold cursor-pointer"
+                onClick={handleLogout}
+            >
+                Logout
             </div>
             <div className="border-t-2 border-gray-100 mt-10 pt-6">
                 <div className="mt-3 font-semibold text-sm text-gray-400">List</div>

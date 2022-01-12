@@ -48,8 +48,38 @@ const refreshAuth = async (refreshToken) => {
     }
 };
 
+const verifyEmail = async (verifyEmailToken) => {
+    try {
+        const verifyEmailTokenDoc = await tokenService.verifyToken(
+            verifyEmailToken,
+            tokenTypes.VERIFY_EMAIL
+        );
+        const user = await userService.getUserById(verifyEmailTokenDoc.user);
+
+        if (!user) {
+            throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+        }
+
+        const { id: userId } = user;
+
+        await Token.deleteMany({
+            user: userId,
+            type: tokenTypes.VERIFY_EMAIL,
+        });
+        await userService.updateUserById(userId, {
+            isEmailVerified: true,
+        });
+    } catch (error) {
+        throw new ApiError(
+            httpStatus.UNAUTHORIZED,
+            "Email verification failed"
+        );
+    }
+};
+
 module.exports = {
     loginUserWithEmailAndPassword,
     logout,
     refreshAuth,
+    verifyEmail,
 };

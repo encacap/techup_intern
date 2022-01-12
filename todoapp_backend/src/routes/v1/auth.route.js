@@ -1,5 +1,6 @@
 const express = require("express");
 const validate = require("../../middlewares/validate");
+const auth = require("../../middlewares/auth");
 const authValidation = require("../../validations/auth.validation");
 const authController = require("../../controllers/auth.controller");
 
@@ -16,6 +17,18 @@ router.post(
     "/refresh-tokens",
     validate(authValidation.refreshTokens),
     authController.refreshTokens
+);
+router.post(
+    "/send-verification-email",
+    auth(),
+    validate(authValidation.sendVerificationEmail),
+    authController.sendVerificationEmail
+);
+router.post(
+    "/verify-email",
+    auth(),
+    validate(authValidation.verifyEmail),
+    authController.verifyEmail
 );
 
 module.exports = router;

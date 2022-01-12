@@ -28,9 +28,23 @@ const refreshTokens = {
     }),
 };
 
+const sendVerificationEmail = {
+    body: Joi.object().keys({
+        callback: Joi.string().required(),
+    }),
+};
+
+const verifyEmail = {
+    body: Joi.object().keys({
+        token: Joi.string().required(),
+    }),
+};
+
 module.exports = {
     register,
     login,
     logout,
     refreshTokens,
+    sendVerificationEmail,
+    verifyEmail,
 };

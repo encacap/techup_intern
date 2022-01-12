@@ -78,9 +78,29 @@ const generateAuthTokens = async (user) => {
     };
 };
 
+const generateVerifyEmailToken = async (user) => {
+    const verifyEmailTokenExpires = dayjs().add(
+        config.jwt.verifyEmailExpirationMinutes,
+        "minutes"
+    );
+    const verifyEmailToken = generateToken(
+        user.id,
+        verifyEmailTokenExpires,
+        tokenTypes.VERIFY_EMAIL
+    );
+    await saveToken(
+        verifyEmailToken,
+        user.id,
+        verifyEmailTokenExpires,
+        tokenTypes.VERIFY_EMAIL
+    );
+    return verifyEmailToken;
+};
+
 module.exports = {
     generateToken,
     saveToken,
     verifyToken,
     generateAuthTokens,
+    generateVerifyEmailToken,
 };

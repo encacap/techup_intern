@@ -7,11 +7,13 @@ const app = require("../../src/app");
 
 const setupTestDB = require("../utils/setupTestDB");
 const { User, Token } = require("../../src/models");
-const { tokenService } = require("../../src/services");
+const { tokenService, emailService } = require("../../src/services");
 
-const { userOne, insertUsers } = require("../fixtures/user.fixture");
 const configs = require("../../src/config/config");
 const { tokenTypes } = require("../../src/config/tokens");
+
+const { userOne, insertUsers } = require("../fixtures/user.fixture");
+const { useOneAccessToken } = require("../fixtures/token.fixture");
 
 setupTestDB();
 
@@ -20,6 +22,8 @@ describe("Auth", () => {
     const loginRoute = "/v1/auth/login";
     const logoutRoute = "/v1/auth/logout";
     const refreshTokensRoute = "/v1/auth/refresh-tokens";
+    const sendVerificationEmailRoute = "/v1/auth/send-verification-email";
+    const verifyEmailRoute = "/v1/auth/verify-email";
 
     describe(`POST ${registerRoute}`, () => {
         let newUser = {};
@@ -254,6 +258,110 @@ describe("Auth", () => {
                 .post(refreshTokensRoute)
                 .send({ refreshToken })
                 .expect(httpStatus.UNAUTHORIZED);
+        });
+    });
+
+    describe(`POST ${sendVerificationEmailRoute}`, () => {
+        beforeEach(() => {
+            jest.spyOn(emailService.transport, "sendMail").mockResolvedValue();
+        });
+
+        test("Should return 204 and send verification email to the user", async () => {
+            insertUsers([userOne]);
+            const sendVerificationEmailSpy = jest.spyOn(
+                emailService,
+                "sendVerificationEmail"
+            );
+
+            await request(app)
+                .post(sendVerificationEmailRoute)
+                .send({ callback: "any" })
+                .set("Authorization", `Bearer ${useOneAccessToken}`)
+                .expect(httpStatus.NO_CONTENT);
+
+            expect(sendVerificationEmailSpy).toHaveBeenCalledWith(
+                expect.anything(Object),
+                expect.anything(String),
+                expect.anything(String)
+            );
+
+            const verifyEmailToken = sendVerificationEmailSpy.mock.calls[0][1];
+            const savedVerifyEmailToken = await Token.findOne({
+                token: verifyEmailToken,
+                user: userOne._id,
+            });
+
+            expect(savedVerifyEmailToken).toBeDefined();
+        });
+
+        test("Should return 400 if missing callbackURL in request body", async () => {
+            insertUsers([userOne]);
+
+            await request(app)
+                .post(sendVerificationEmailRoute)
+                .send()
+                .set("Authorization", `Bearer ${useOneAccessToken}`)
+                .expect(httpStatus.BAD_REQUEST);
+        });
+
+        test("Should return 401 if unauthorized", async () => {
+            await request(app)
+                .post(sendVerificationEmailRoute)
+                .send({ callback: "any" })
+                .expect(httpStatus.UNAUTHORIZED);
+        });
+    });
+
+    describe(`POST ${verifyEmailRoute}`, () => {
+        test("Should return 204 and verify user's email if the token is valid", async () => {
+            await insertUsers([userOne]);
+
+            const verifyEmailTokenExpires = dayjs().add(
+                configs.jwt.verifyEmailExpirationMinutes,
+                "minutes"
+            );
+            const verifyEmailToken = tokenService.generateToken(
+                userOne._id,
+                verifyEmailTokenExpires,
+                tokenTypes.VERIFY_EMAIL
+            );
+
+            await tokenService.saveToken(
+                verifyEmailToken,
+                userOne._id,
+                verifyEmailTokenExpires,
+                tokenTypes.VERIFY_EMAIL
+            );
+
+            await request(app)
+                .post(verifyEmailRoute)
+                .send({ token: verifyEmailToken })
+                .expect(httpStatus.NO_CONTENT);
+
+            const savedUser = await User.findById(userOne._id);
+            expect(savedUser.isEmailVerified).toBe(true);
+
+            const savedVerifyEmailTokens = await Token.countDocuments({
+                user: userOne._id,
+                type: tokenTypes.VERIFY_EMAIL,
+            });
+            expect(savedVerifyEmailTokens).toBe(0);
+        });
+
+        test("Should return 400 if missing token", async () => {
+            await request(app)
+                .post(verifyEmailRoute)
+                .send()
+                .expect(httpStatus.BAD_REQUEST);
+        });
+
+        test("Should return 401 if token is invalid", async () => {
+            const res = await request(app)
+                .post(verifyEmailRoute)
+                .send({ token: "invalid-token" })
+                .expect(httpStatus.UNAUTHORIZED);
+
+            expect(res.body.message).toEqual("Email verification failed");
         });
     });
 });

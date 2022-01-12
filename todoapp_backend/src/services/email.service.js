@@ -39,5 +39,6 @@ const sendVerificationEmail = async (user, verifyEmailToken, callbackURL) => {
 };
 
 module.exports = {
+    transport,
     sendVerificationEmail,
 };

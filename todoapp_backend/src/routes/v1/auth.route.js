@@ -26,7 +26,6 @@ router.post(
 );
 router.post(
     "/verify-email",
-    auth(),
     validate(authValidation.verifyEmail),
     authController.verifyEmail
 );

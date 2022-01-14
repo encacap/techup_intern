@@ -14,7 +14,10 @@ import {
     SET_NEW_LIST,
     SET_NEW_TODO,
     SET_SELECTED_LIST,
+    SET_LISTS,
 } from "../constants/todo";
+
+import * as todoService from "../services/todo.service";
 
 const storage = (() => {
     const storageName = "todo_app";
@@ -49,7 +52,7 @@ const initialState = {
     editingTodoValue: null,
     newList: "",
     isShowAddListForm: false,
-    lists: storage.get("lists") || [
+    lists: [
         {
             id: "220400",
             name: "Tất cả công việc",
@@ -170,6 +173,20 @@ const todoReducer = (state = initialState, action) => {
             };
         }
 
+        case SET_LISTS: {
+            return {
+                ...state,
+                lists: [
+                    {
+                        id: "220400",
+                        name: "Tất cả công việc",
+                        isDefault: true,
+                    },
+                    ...payload,
+                ],
+            };
+        }
+
         case ADD_NEW_LIST: {
             const newLists = [...state.lists, payload];
 
@@ -199,7 +216,6 @@ const todoReducer = (state = initialState, action) => {
                 }
                 return list;
             });
-            saveLists(newLists);
             return {
                 ...state,
                 lists: newLists,

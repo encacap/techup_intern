@@ -20,12 +20,12 @@ const Home = () => {
     useEffect(() => {
         const getUserInformation = async () => {
             try {
-                const { data } = await request.get(`users/${user.id}`);
-                if (data.isEmailVerified === false) {
+                const { isEmailVerified } = await request.get(`users/${user.id}`);
+                if (isEmailVerified === false) {
                     navigate("/accounts/verify-email");
                 }
             } catch (error) {
-                console.log(error.response);
+                console.log(error);
             }
         };
 

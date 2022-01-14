@@ -1,8 +1,11 @@
 import clsx from "clsx";
 import { AddCircle, User } from "iconsax-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+
+import * as todoService from "../../../services/todo.service";
+
 import * as todoActions from "../../../actions/todo";
 import * as userActions from "../../../actions/user";
 import request from "../../../utils/request";
@@ -17,6 +20,12 @@ const Sidebar = () => {
 
     const params = useParams();
     const { listId } = params;
+
+    useEffect(() => {
+        todoService.getLists(user.id).then((response) => {
+            dispatch(todoActions.setLists(response.results));
+        });
+    }, [user, dispatch]);
 
     useEffect(() => {
         if (isShowAddListForm) {
@@ -42,11 +51,16 @@ const Sidebar = () => {
         dispatch(todoActions.setAddListFormStatus(true));
     };
 
-    const handleSubmitAddList = (e) => {
+    const handleSubmitAddList = async (e) => {
         e.preventDefault();
-        dispatch(todoActions.addNewList({ id: String(Date.now()), name: newList }));
-        dispatch(todoActions.setAddListFormStatus(false));
-        dispatch(todoActions.setNewList(""));
+        try {
+            const savedNewList = await todoService.createList(user.id, { name: newList });
+            dispatch(todoActions.addNewList(savedNewList));
+            dispatch(todoActions.setAddListFormStatus(false));
+            dispatch(todoActions.setNewList(""));
+        } catch (error) {
+            console.log({ error });
+        }
     };
 
     const handleBlurAddList = (e) => {
@@ -65,22 +79,36 @@ const Sidebar = () => {
         dispatch(todoActions.setSelectedList(listId));
     };
 
-    const handleSubmitEditList = (e) => {
+    const handleSubmitEditList = async (e, selectedId) => {
         e.preventDefault();
 
         if (editingList) {
-            dispatch(todoActions.editList(listId, editingList));
+            try {
+                const selectedList = lists.find((list) => list.id === selectedId);
+                await todoService.updateListById(selectedId, {
+                    ...selectedList,
+                    name: editingList,
+                });
+                dispatch(todoActions.editList(selectedId, editingList));
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         dispatch(todoActions.setSelectedList(null));
         dispatch(todoActions.setEditingList(null));
     };
 
-    const handleRemoveList = (e, selectedId) => {
+    const handleRemoveList = async (e, selectedId) => {
         e.preventDefault();
         e.stopPropagation();
 
-        dispatch(todoActions.removeList(selectedId));
+        try {
+            await todoService.deleteListById(user.id, selectedId);
+            dispatch(todoActions.removeList(selectedId));
+        } catch (error) {
+            console.log(error);
+        }
 
         if (listId === String(selectedId)) {
             const defaultList = lists.find((list) => list.isDefault);
@@ -100,7 +128,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="w-82 border-r-2 border-gray-100 p-10">
+        <div className="w-80 border-r-2 border-gray-100 p-10">
             <div className="flex border-2 border-transparent">
                 <div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full">
                     <User className="w-10" />
@@ -119,54 +147,59 @@ const Sidebar = () => {
             <div className="border-t-2 border-gray-100 mt-10 pt-6">
                 <div className="mt-3 font-semibold text-sm text-gray-400">List</div>
                 <div className="pt-3">
-                    {lists.map((list) => (
-                        <Link
-                            to={`./${list.id}/all`}
-                            className={clsx("group relative block", styles.list__item, {
-                                [styles.active]: listId === String(list.id),
-                            })}
-                            key={list.id}
-                        >
-                            {selectedListId === String(list.id) ? (
-                                <form action="" className="editListForm relative" onSubmit={handleSubmitEditList}>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter new name..."
-                                        value={editingList || list.name}
-                                        onChange={(e) => dispatch(todoActions.setEditingList(e.target.value))}
-                                        onBlur={handleSubmitEditList}
-                                        className="editingList outline-none bg-gray-100 w-full"
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="absolute right-0 bg-blue-500 rounded-md px-2 py-1 font-semibold text-xs text-white"
+                    {lists.length > 0 &&
+                        lists.map((list) => (
+                            <Link
+                                to={`./${list.id}/all`}
+                                className={clsx("group relative block", styles.list__item, {
+                                    [styles.active]: listId === String(list.id),
+                                })}
+                                key={list.id}
+                            >
+                                {selectedListId === String(list.id) ? (
+                                    <form
+                                        action=""
+                                        className="editListForm relative"
+                                        onSubmit={(e) => handleSubmitEditList(e, list.id)}
                                     >
-                                        Change
-                                    </button>
-                                </form>
-                            ) : (
-                                <>
-                                    <div className="flex-1">{list.name}</div>
-                                    <div className="absolute right-0 top-2.5 hidden group-hover:flex items-center bg-white text-gray-400 font-normal">
-                                        <div
-                                            className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
-                                            onClick={(e) => handleInputEditList(e, list.id)}
+                                        <input
+                                            type="text"
+                                            placeholder="Enter new name..."
+                                            value={editingList || list.name}
+                                            onChange={(e) => dispatch(todoActions.setEditingList(e.target.value))}
+                                            onBlur={(e) => handleSubmitEditList(e, list.id)}
+                                            className="editingList outline-none bg-gray-100 w-full"
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="absolute right-0 bg-blue-500 rounded-md px-2 py-1 font-semibold text-xs text-white"
                                         >
-                                            Edit
-                                        </div>
-                                        {!list.isDefault && (
+                                            Change
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <>
+                                        <div className="flex-1">{list.name}</div>
+                                        <div className="absolute right-0 top-2.5 hidden group-hover:flex items-center bg-white text-gray-400 font-normal">
                                             <div
-                                                className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
-                                                onClick={(e) => handleRemoveList(e, list.id)}
+                                                className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                                onClick={(e) => handleInputEditList(e, list.id)}
                                             >
-                                                Delete
+                                                Edit
                                             </div>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-                        </Link>
-                    ))}
+                                            {!list.isDefault && (
+                                                <div
+                                                    className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                                    onClick={(e) => handleRemoveList(e, list.id)}
+                                                >
+                                                    Delete
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
+                            </Link>
+                        ))}
                     {isShowAddListForm && (
                         <form action="" onSubmit={handleSubmitAddList} id="addNewList">
                             <input

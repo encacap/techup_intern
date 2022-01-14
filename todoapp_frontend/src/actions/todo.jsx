@@ -14,6 +14,7 @@ import {
     SET_NEW_LIST,
     SET_NEW_TODO,
     SET_SELECTED_LIST,
+    SET_LISTS,
 } from "../constants/todo";
 
 export const setNewTodo = (newTodo) => ({
@@ -64,6 +65,11 @@ export const setEditingTodoValue = (value) => ({
 
 export const setNewList = (payload) => ({
     type: SET_NEW_LIST,
+    payload,
+});
+
+export const setLists = (payload) => ({
+    type: SET_LISTS,
     payload,
 });
 

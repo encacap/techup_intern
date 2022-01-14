@@ -15,7 +15,7 @@ const createInstance = () => {
     });
 
     instance.interceptors.response.use(
-        (response) => response,
+        (response) => response.data,
         async (error) => {
             const { response, config: originalConfigs } = error;
 

@@ -30,13 +30,17 @@ const createInstance = () => {
             originalConfigs.retry = true;
 
             try {
-                const { data } = instance.post("auth/refresh-tokens", {
-                    refreshToken: refreshToken.token,
-                });
-                storage.set("accessToken", data.accessToken);
-                storage.set("refreshToken", data.refreshToken);
-                instance.defaults.headers.Authorization = `Bearer ${data.accessToken}`;
-                originalConfigs.headers.Authorization = `Bearer ${data.accessToken}`;
+                const { data } = await axios.post(
+                    "auth/refresh-tokens",
+                    {
+                        refreshToken: refreshToken.token,
+                    },
+                    originalConfigs
+                );
+                storage.set("accessToken", data.access);
+                storage.set("refreshToken", data.refresh);
+                instance.defaults.headers.Authorization = `Bearer ${data.access}`;
+                originalConfigs.headers.Authorization = `Bearer ${data.access}`;
                 return axios(originalConfigs);
             } catch (refreshError) {
                 return Promise.reject(refreshError);

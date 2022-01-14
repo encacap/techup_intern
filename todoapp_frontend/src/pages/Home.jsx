@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-do
 import TodoBody from "../components/Todo/Body";
 import TodoForm from "../components/Todo/Form";
 import TodoSidebar from "../components/Todo/Sidebar";
+import request from "../utils/request";
 
 const Home = () => {
     const params = useParams();
@@ -15,6 +16,25 @@ const Home = () => {
             navigate("/accounts/login", { replace: true });
         }
     }, [user, navigate]);
+
+    useEffect(() => {
+        const getUserInformation = async () => {
+            try {
+                const { data } = await request.get(`users/${user.id}`);
+                if (data.isEmailVerified === false) {
+                    navigate("/accounts/verify-email");
+                }
+            } catch (error) {
+                console.log(error.response);
+            }
+        };
+
+        if (!accessToken || !user) {
+            navigate("/accounts/login", { replace: true });
+        } else {
+            getUserInformation();
+        }
+    }, [user, accessToken, navigate]);
 
     return (
         <>

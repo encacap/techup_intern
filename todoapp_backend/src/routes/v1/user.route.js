@@ -5,19 +5,19 @@ const validate = require("../../middlewares/validate");
 const userValidation = require("../../validations/user.validation");
 const userController = require("../../controllers/user.controller");
 
-const todoController = require("../../controllers/todo.controller");
-const todoValidation = require("../../validations/todo.validation");
+const listController = require("../../controllers/list.controller");
+const listValidation = require("../../validations/list.validation");
 
 const router = express.Router();
 
 router
     .route("/:userId/lists")
-    .get(auth(), validate(todoValidation.getLists), todoController.getLists)
-    .post(auth(), validate(todoValidation.createList), todoController.createList);
+    .get(auth(), validate(listValidation.getLists), listController.getLists)
+    .post(auth(), validate(listValidation.createList), listController.createList);
 router
     .route("/:userId/lists/:listId")
-    .patch(auth(), validate(todoValidation.updateList), todoController.updateList)
-    .delete(auth(), validate(todoValidation.deleteList), todoController.deleteList);
+    .patch(auth(), validate(listValidation.updateList), listController.updateList)
+    .delete(auth(), validate(listValidation.deleteList), listController.deleteList);
 router.route("/:userId").get(auth("getUsers"), validate(userValidation.getUser), userController.getUser);
 
 module.exports = router;

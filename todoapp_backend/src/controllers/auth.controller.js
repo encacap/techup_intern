@@ -36,6 +36,20 @@ const verifyEmail = catchAsync(async (req, res) => {
     res.sendStatus(httpStatus.NO_CONTENT);
 });
 
+const forgotPassword = catchAsync(async (req, res) => {
+    const { email, callback } = req.body;
+    const user = await userService.getUserByEmail(email);
+    const passwordResetToken = await tokenService.generatePasswordResetToken(user);
+    await emailService.sendPasswordResetEmail(user, passwordResetToken, callback);
+    res.sendStatus(httpStatus.NO_CONTENT);
+});
+
+const resetPassword = catchAsync(async (req, res) => {
+    const { password, confirmPassword, token } = req.body;
+    await authService.resetPassword(token, password, confirmPassword);
+    res.sendStatus(httpStatus.NO_CONTENT);
+});
+
 module.exports = {
     register,
     login,
@@ -43,4 +57,6 @@ module.exports = {
     refreshTokens,
     sendVerificationEmail,
     verifyEmail,
+    forgotPassword,
+    resetPassword,
 };

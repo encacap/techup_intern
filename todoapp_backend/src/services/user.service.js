@@ -14,12 +14,20 @@ const queryUsers = async (filter, options) => {
     return users;
 };
 
-const getUserById = async (id) => {
-    return User.findById(id);
+const getUserById = async (id, throwError = true) => {
+    const user = await User.findById(id);
+    if (!user && throwError) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return user;
 };
 
-const getUserByEmail = async (email) => {
-    return User.findOne({ email });
+const getUserByEmail = async (email, throwError = true) => {
+    const user = await User.findOne({ email });
+    if (!user && throwError) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return user;
 };
 
 const updateUserById = async (userId, updateBody) => {

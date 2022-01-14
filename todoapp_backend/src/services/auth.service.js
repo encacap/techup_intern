@@ -6,7 +6,7 @@ const userService = require("./user.service");
 const tokenService = require("./token.service");
 
 const loginUserWithEmailAndPassword = async (email, password) => {
-    const user = await userService.getUserByEmail(email);
+    const user = await userService.getUserByEmail(email, false);
     if (!user || !(await user.isPasswordMatch(password))) {
         throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
     }
@@ -65,9 +65,29 @@ const verifyEmail = async (verifyEmailToken) => {
     }
 };
 
+const resetPassword = async (resetPasswordToken, newPassword, confirmNewPassword) => {
+    if (newPassword !== confirmNewPassword) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Passwords do not match");
+    }
+    try {
+        const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
+        const user = await userService.getUserById(resetPasswordTokenDoc.user);
+        await userService.updateUserById(user.id, {
+            password: newPassword,
+        });
+        await Token.deleteMany({
+            user: user.id,
+            type: tokenTypes.RESET_PASSWORD,
+        });
+    } catch (error) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Password reset failed");
+    }
+};
+
 module.exports = {
     loginUserWithEmailAndPassword,
     logout,
     refreshAuth,
     verifyEmail,
+    resetPassword,
 };

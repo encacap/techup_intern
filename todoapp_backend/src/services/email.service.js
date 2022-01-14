@@ -38,7 +38,21 @@ const sendVerificationEmail = async (user, verifyEmailToken, callbackURL) => {
     await sendEmail(user.email, subject, content);
 };
 
+const sendPasswordResetEmail = async (user, passwordResetToken, callbackURL) => {
+    const subject = "Reset your password";
+    const passwordResetURL = `${callbackURL}?token=${passwordResetToken}`;
+    const content = `
+        Dear ${user.name},
+        <br />
+        To reset your password, please click on the following link:
+        <br />
+        <a href="${passwordResetURL}">${passwordResetURL}</a>
+    `;
+    await sendEmail(user.email, subject, content);
+};
+
 module.exports = {
     transport,
     sendVerificationEmail,
+    sendPasswordResetEmail,
 };

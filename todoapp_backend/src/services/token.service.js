@@ -66,10 +66,18 @@ const generateVerifyEmailToken = async (user) => {
     return verifyEmailToken;
 };
 
+const generatePasswordResetToken = async (user) => {
+    const resetPasswordTokenExpires = dayjs().add(config.jwt.resetPasswordExpirationMinutes, "minutes");
+    const resetPasswordToken = generateToken(user.id, resetPasswordTokenExpires, tokenTypes.RESET_PASSWORD);
+    await saveToken(resetPasswordToken, user.id, resetPasswordTokenExpires, tokenTypes.RESET_PASSWORD);
+    return resetPasswordToken;
+};
+
 module.exports = {
     generateToken,
     saveToken,
     verifyToken,
     generateAuthTokens,
     generateVerifyEmailToken,
+    generatePasswordResetToken,
 };

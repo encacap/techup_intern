@@ -7,7 +7,7 @@ const app = require("../../src/app");
 
 const setupTestDB = require("../utils/setupTestDB");
 const { User, Token } = require("../../src/models");
-const { tokenService, emailService } = require("../../src/services");
+const { tokenService, emailService, authService } = require("../../src/services");
 
 const configs = require("../../src/config/config");
 const { tokenTypes } = require("../../src/config/tokens");
@@ -24,6 +24,8 @@ describe("Auth", () => {
     const refreshTokensRoute = "/v1/auth/refresh-tokens";
     const sendVerificationEmailRoute = "/v1/auth/send-verification-email";
     const verifyEmailRoute = "/v1/auth/verify-email";
+    const forgotPasswordRoute = "/v1/auth/forgot-password";
+    const resetPasswordRoute = "/v1/auth/reset-password";
 
     describe(`POST ${registerRoute}`, () => {
         let newUser = {};
@@ -286,6 +288,123 @@ describe("Auth", () => {
                 .expect(httpStatus.UNAUTHORIZED);
 
             expect(res.body.message).toEqual("Email verification failed");
+        });
+    });
+
+    describe(`POST ${forgotPasswordRoute}`, () => {
+        beforeEach(() => {
+            jest.spyOn(emailService.transport, "sendMail").mockResolvedValue();
+        });
+
+        test("Should return 204 and send forgot password email to the user", async () => {
+            insertUsers([userOne]);
+            const sendForgotPasswordEmailSpy = jest.spyOn(emailService, "sendPasswordResetEmail");
+
+            await request(app)
+                .post(forgotPasswordRoute)
+                .send({ email: userOne.email, callback: "any" })
+                .expect(httpStatus.NO_CONTENT);
+
+            expect(sendForgotPasswordEmailSpy).toHaveBeenCalledWith(
+                expect.anything(Object),
+                expect.anything(String),
+                expect.anything(String)
+            );
+
+            const savedPasswordResetToken = await Token.findOne({
+                token: sendForgotPasswordEmailSpy.mock.calls[0][1],
+                user: userOne._id,
+            });
+
+            expect(savedPasswordResetToken).toBeDefined();
+        });
+
+        test("Should return 400 if missing email or callbackURL", async () => {
+            await request(app).post(forgotPasswordRoute).send().expect(httpStatus.BAD_REQUEST);
+        });
+
+        test("Should return 400 if email is invalid", async () => {
+            const res = await request(app)
+                .post(forgotPasswordRoute)
+                .send({ email: "invalid-email", callback: "any" })
+                .expect(httpStatus.BAD_REQUEST);
+
+            expect(res.body.message).toEqual(expect.stringContaining("must be a valid email"));
+        });
+
+        test("Should return 404 if user doesn't exists", async () => {
+            await request(app)
+                .post(forgotPasswordRoute)
+                .send({ email: userOne.email, callback: "any" })
+                .expect(httpStatus.NOT_FOUND);
+        });
+    });
+
+    describe(`POST ${resetPasswordRoute}`, () => {
+        test("Should return 204 and update user's password if request is OK", async () => {
+            insertUsers([userOne]);
+            const resetPasswordSpy = jest.spyOn(authService, "resetPassword");
+
+            const resetPasswordTokenExpires = dayjs().add(configs.jwt.resetPasswordExpirationMinutes, "minutes");
+            const resetPasswordToken = tokenService.generateToken(
+                userOne._id,
+                resetPasswordTokenExpires,
+                tokenTypes.PASSWORD_RESET
+            );
+            await tokenService.saveToken(
+                resetPasswordToken,
+                userOne._id,
+                resetPasswordTokenExpires,
+                tokenTypes.RESET_PASSWORD
+            );
+
+            await request(app)
+                .post(resetPasswordRoute)
+                .send({
+                    token: resetPasswordToken,
+                    password: "new-password1",
+                    confirmPassword: "new-password1",
+                })
+                .expect(httpStatus.NO_CONTENT);
+
+            expect(resetPasswordSpy).toHaveBeenCalledWith(resetPasswordToken, "new-password1", "new-password1");
+
+            const savedPasswordResetTokens = await Token.countDocuments({
+                user: userOne._id,
+                type: tokenTypes.PASSWORD_RESET,
+            });
+
+            expect(savedPasswordResetTokens).toBe(0);
+        });
+
+        test("Should return 400 if missing arguments", async () => {
+            await request(app).post(resetPasswordRoute).send().expect(httpStatus.BAD_REQUEST);
+        });
+
+        test("Should return 400 if passwords does not match", async () => {
+            const res = await request(app)
+                .post(resetPasswordRoute)
+                .send({
+                    token: "any",
+                    password: "new-password1",
+                    confirmPassword: "new-password2",
+                })
+                .expect(httpStatus.BAD_REQUEST);
+
+            expect(res.body.message).toEqual("Passwords do not match");
+        });
+
+        test("Should return 401 if token is invalid", async () => {
+            const res = await request(app)
+                .post(resetPasswordRoute)
+                .send({
+                    token: "invalid-token",
+                    password: "new-password1",
+                    confirmPassword: "new-password1",
+                })
+                .expect(httpStatus.UNAUTHORIZED);
+
+            expect(res.body.message).toEqual("Password reset failed");
         });
     });
 });

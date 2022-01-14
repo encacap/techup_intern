@@ -14,7 +14,10 @@ router
     .route("/:userId/lists")
     .get(auth(), validate(todoValidation.getLists), todoController.getLists)
     .post(auth(), validate(todoValidation.createList), todoController.createList);
-router.route("/:userId/lists/:listId").patch(auth(), validate(todoValidation.updateList), todoController.updateList);
+router
+    .route("/:userId/lists/:listId")
+    .patch(auth(), validate(todoValidation.updateList), todoController.updateList)
+    .delete(auth(), validate(todoValidation.deleteList), todoController.deleteList);
 router.route("/:userId").get(auth("getUsers"), validate(userValidation.getUser), userController.getUser);
 
 module.exports = router;

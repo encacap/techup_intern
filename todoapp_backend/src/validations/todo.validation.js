@@ -26,8 +26,13 @@ const updateList = {
     }),
 };
 
+const deleteList = {
+    params: updateList.params,
+};
+
 module.exports = {
     getLists,
     createList,
     updateList,
+    deleteList,
 };

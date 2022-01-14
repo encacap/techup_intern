@@ -33,8 +33,14 @@ const updateListById = async (listId, listBody) => {
     return list.save();
 };
 
+const deleteListById = async (listId) => {
+    const list = await getListById(listId);
+    return list.remove();
+};
+
 module.exports = {
     createList,
     getListsByUserId,
     updateListById,
+    deleteListById,
 };

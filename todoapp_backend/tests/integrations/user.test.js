@@ -81,17 +81,6 @@ describe("Users", () => {
             expect(res.body).toHaveProperty("results");
         });
 
-        test("Should return 400 if user's id is invalid", async () => {
-            insertUsers([userOne]);
-
-            await request(app)
-                .get(listsRoute("invalid-id"))
-                .set({
-                    Authorization: `Bearer ${useOneAccessToken}`,
-                })
-                .expect(httpStatus.BAD_REQUEST);
-        });
-
         test("Should return 401 if unauthorized", async () => {
             insertUsers([userOne]);
 
@@ -148,6 +137,31 @@ describe("Users", () => {
                     name: listOne.name,
                 })
                 .expect(httpStatus.UNAUTHORIZED);
+        });
+    });
+
+    describe(`DELETE ${listRoute()}`, () => {
+        test("Should return 204 if request is OK", async () => {
+            insertUsers([userOne]);
+            insertLists([listOne]);
+
+            const res = await request(app)
+                .delete(listRoute(userOne._id, listOne._id))
+                .set({
+                    Authorization: `Bearer ${useOneAccessToken}`,
+                });
+
+            expect(res.status).toBe(httpStatus.NO_CONTENT);
+
+            const savedList = await List.findById(listOne._id);
+            expect(savedList).toBeNull();
+        });
+
+        test("Should return 401 if unauthorized", async () => {
+            insertUsers([userOne]);
+            insertLists([listOne]);
+
+            await request(app).delete(listRoute(userOne._id, listOne._id)).expect(httpStatus.UNAUTHORIZED);
         });
     });
 });

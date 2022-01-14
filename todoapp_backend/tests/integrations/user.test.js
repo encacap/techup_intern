@@ -138,6 +138,20 @@ describe("Users", () => {
                 })
                 .expect(httpStatus.UNAUTHORIZED);
         });
+
+        test("Should return 404 if list not found", async () => {
+            insertUsers([userOne]);
+
+            await request(app)
+                .patch(listRoute(userOne._id, listOne._id))
+                .send({
+                    name: listOne.name,
+                })
+                .set({
+                    Authorization: `Bearer ${useOneAccessToken}`,
+                })
+                .expect(httpStatus.NOT_FOUND);
+        });
     });
 
     describe(`DELETE ${listRoute()}`, () => {
@@ -159,9 +173,19 @@ describe("Users", () => {
 
         test("Should return 401 if unauthorized", async () => {
             insertUsers([userOne]);
-            insertLists([listOne]);
 
             await request(app).delete(listRoute(userOne._id, listOne._id)).expect(httpStatus.UNAUTHORIZED);
+        });
+
+        test("Should return 404 if list not found", async () => {
+            insertUsers([userOne]);
+
+            await request(app)
+                .delete(listRoute(userOne._id, listOne._id))
+                .set({
+                    Authorization: `Bearer ${useOneAccessToken}`,
+                })
+                .expect(httpStatus.NOT_FOUND);
         });
     });
 });

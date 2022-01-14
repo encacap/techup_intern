@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
+import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -17,6 +18,7 @@ function App() {
                     <Route path="login" element={<Login />}></Route>
                     <Route path="register" element={<Register />}></Route>
                     <Route path="verify-email" element={<VerifyEmail />} />
+                    <Route path="forgot-password" element={<ForgotPassword />} />
                 </Route>
                 <Route path="/todos/*" element={<Home />}>
                     <Route path=":listId/*" element={<Home />} />

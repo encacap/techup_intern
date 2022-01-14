@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import * as todoActions from "../../../actions/todo";
 import * as userActions from "../../../actions/user";
 import request from "../../../utils/request";
+import Button from "../../Common/Button";
 import styles from "./Sidebar.module.scss";
 
 const Sidebar = () => {
@@ -179,13 +180,10 @@ const Sidebar = () => {
                         </form>
                     )}
                 </div>
-                <div
-                    className="flex items-center justify-center mt-7 border-2 border-blue-500 rounded-md bg-blue-500 py-3 text-white hover:bg-blue-600 transition-colors duration-200 cursor-pointer"
-                    onClick={handleClickAddButton}
-                >
+                <Button onClick={handleClickAddButton} className="w-full">
                     <AddCircle className="w-5 h-5 mr-2" variant="Outline" />
                     <div className="font-semibold text-sm">Create new list</div>
-                </div>
+                </Button>
             </div>
         </div>
     );

@@ -72,19 +72,13 @@ describe("Auth", () => {
 
         test("Should return 400 if email is invalid", async () => {
             newUser.email = "invalid-email";
-            await request(app)
-                .post(registerRoute)
-                .send(newUser)
-                .expect(httpStatus.BAD_REQUEST);
+            await request(app).post(registerRoute).send(newUser).expect(httpStatus.BAD_REQUEST);
         });
 
         test("Should return 400 if email is already exists", async () => {
             await insertUsers([userOne]);
             newUser.email = userOne.email;
-            await request(app)
-                .post(registerRoute)
-                .send(newUser)
-                .expect(httpStatus.BAD_REQUEST);
+            await request(app).post(registerRoute).send(newUser).expect(httpStatus.BAD_REQUEST);
         });
     });
 
@@ -97,9 +91,7 @@ describe("Auth", () => {
                 password: userOne.password,
             };
 
-            const res = await request(app)
-                .post(loginRoute)
-                .send(loginCredentials);
+            const res = await request(app).post(loginRoute).send(loginCredentials);
 
             expect(res.status).toBe(httpStatus.OK);
             expect(res.body.user).not.toHaveProperty("password");
@@ -129,10 +121,7 @@ describe("Auth", () => {
                 password: userOne.password,
             };
 
-            const res = await request(app)
-                .post(loginRoute)
-                .send(loginCredentials)
-                .expect(httpStatus.UNAUTHORIZED);
+            const res = await request(app).post(loginRoute).send(loginCredentials).expect(httpStatus.UNAUTHORIZED);
 
             expect(res.body).toEqual({
                 code: httpStatus.UNAUTHORIZED,
@@ -148,10 +137,7 @@ describe("Auth", () => {
                 password: "incorrect-password",
             };
 
-            const res = await request(app)
-                .post(loginRoute)
-                .send(loginCredentials)
-                .expect(httpStatus.UNAUTHORIZED);
+            const res = await request(app).post(loginRoute).send(loginCredentials).expect(httpStatus.UNAUTHORIZED);
 
             expect(res.body).toEqual({
                 code: httpStatus.UNAUTHORIZED,
@@ -164,27 +150,12 @@ describe("Auth", () => {
         test("Should return 204 and remove refreshToken if it is valid", async () => {
             await insertUsers([userOne]);
 
-            const expires = dayjs().add(
-                configs.jwt.refreshExpirationDays,
-                "days"
-            );
-            const refreshToken = tokenService.generateToken(
-                userOne._id,
-                expires,
-                tokenTypes.REFRESH
-            );
+            const expires = dayjs().add(configs.jwt.refreshExpirationDays, "days");
+            const refreshToken = tokenService.generateToken(userOne._id, expires, tokenTypes.REFRESH);
 
-            await tokenService.saveToken(
-                refreshToken,
-                userOne._id,
-                expires,
-                tokenTypes.REFRESH
-            );
+            await tokenService.saveToken(refreshToken, userOne._id, expires, tokenTypes.REFRESH);
 
-            await request(app)
-                .post(logoutRoute)
-                .send({ refreshToken })
-                .expect(httpStatus.NO_CONTENT);
+            await request(app).post(logoutRoute).send({ refreshToken }).expect(httpStatus.NO_CONTENT);
 
             const savedRefreshToken = await Token.findOne({
                 token: refreshToken,
@@ -195,20 +166,10 @@ describe("Auth", () => {
         test("Should return 404 if refreshToken not found", async () => {
             await insertUsers([userOne]);
 
-            const expires = dayjs().add(
-                configs.jwt.refreshExpirationDays,
-                "days"
-            );
-            const refreshToken = tokenService.generateToken(
-                userOne._id,
-                expires,
-                tokenTypes.REFRESH
-            );
+            const expires = dayjs().add(configs.jwt.refreshExpirationDays, "days");
+            const refreshToken = tokenService.generateToken(userOne._id, expires, tokenTypes.REFRESH);
 
-            await request(app)
-                .post(logoutRoute)
-                .send({ refreshToken })
-                .expect(httpStatus.NOT_FOUND);
+            await request(app).post(logoutRoute).send({ refreshToken }).expect(httpStatus.NOT_FOUND);
         });
     });
 
@@ -216,27 +177,13 @@ describe("Auth", () => {
         test("Should return 200 and new tokens if request is OK", async () => {
             await insertUsers([userOne]);
 
-            const expires = dayjs().add(
-                configs.jwt.refreshExpirationDays,
-                "days"
-            );
+            const expires = dayjs().add(configs.jwt.refreshExpirationDays, "days");
 
-            const refreshToken = tokenService.generateToken(
-                userOne._id,
-                expires,
-                tokenTypes.REFRESH
-            );
+            const refreshToken = tokenService.generateToken(userOne._id, expires, tokenTypes.REFRESH);
 
-            await tokenService.saveToken(
-                refreshToken,
-                userOne._id,
-                expires,
-                tokenTypes.REFRESH
-            );
+            await tokenService.saveToken(refreshToken, userOne._id, expires, tokenTypes.REFRESH);
 
-            const res = await request(app)
-                .post(refreshTokensRoute)
-                .send({ refreshToken });
+            const res = await request(app).post(refreshTokensRoute).send({ refreshToken });
 
             expect(res.status).toBe(httpStatus.OK);
             expect(res.body).toEqual({
@@ -254,10 +201,7 @@ describe("Auth", () => {
         test("Should return 401 if refreshToken is invalid", async () => {
             const refreshToken = "invalid-refresh-token";
 
-            await request(app)
-                .post(refreshTokensRoute)
-                .send({ refreshToken })
-                .expect(httpStatus.UNAUTHORIZED);
+            await request(app).post(refreshTokensRoute).send({ refreshToken }).expect(httpStatus.UNAUTHORIZED);
         });
     });
 
@@ -268,10 +212,7 @@ describe("Auth", () => {
 
         test("Should return 204 and send verification email to the user", async () => {
             insertUsers([userOne]);
-            const sendVerificationEmailSpy = jest.spyOn(
-                emailService,
-                "sendVerificationEmail"
-            );
+            const sendVerificationEmailSpy = jest.spyOn(emailService, "sendVerificationEmail");
 
             await request(app)
                 .post(sendVerificationEmailRoute)
@@ -305,10 +246,7 @@ describe("Auth", () => {
         });
 
         test("Should return 401 if unauthorized", async () => {
-            await request(app)
-                .post(sendVerificationEmailRoute)
-                .send({ callback: "any" })
-                .expect(httpStatus.UNAUTHORIZED);
+            await request(app).post(sendVerificationEmailRoute).send({ callback: "any" }).expect(httpStatus.UNAUTHORIZED);
         });
     });
 
@@ -316,27 +254,16 @@ describe("Auth", () => {
         test("Should return 204 and verify user's email if the token is valid", async () => {
             await insertUsers([userOne]);
 
-            const verifyEmailTokenExpires = dayjs().add(
-                configs.jwt.verifyEmailExpirationMinutes,
-                "minutes"
-            );
+            const verifyEmailTokenExpires = dayjs().add(configs.jwt.verifyEmailExpirationMinutes, "minutes");
             const verifyEmailToken = tokenService.generateToken(
                 userOne._id,
                 verifyEmailTokenExpires,
                 tokenTypes.VERIFY_EMAIL
             );
 
-            await tokenService.saveToken(
-                verifyEmailToken,
-                userOne._id,
-                verifyEmailTokenExpires,
-                tokenTypes.VERIFY_EMAIL
-            );
+            await tokenService.saveToken(verifyEmailToken, userOne._id, verifyEmailTokenExpires, tokenTypes.VERIFY_EMAIL);
 
-            await request(app)
-                .post(verifyEmailRoute)
-                .send({ token: verifyEmailToken })
-                .expect(httpStatus.NO_CONTENT);
+            await request(app).post(verifyEmailRoute).send({ token: verifyEmailToken }).expect(httpStatus.NO_CONTENT);
 
             const savedUser = await User.findById(userOne._id);
             expect(savedUser.isEmailVerified).toBe(true);
@@ -349,10 +276,7 @@ describe("Auth", () => {
         });
 
         test("Should return 400 if missing token", async () => {
-            await request(app)
-                .post(verifyEmailRoute)
-                .send()
-                .expect(httpStatus.BAD_REQUEST);
+            await request(app).post(verifyEmailRoute).send().expect(httpStatus.BAD_REQUEST);
         });
 
         test("Should return 401 if token is invalid", async () => {

@@ -8,10 +8,7 @@ const tokenService = require("./token.service");
 const loginUserWithEmailAndPassword = async (email, password) => {
     const user = await userService.getUserByEmail(email);
     if (!user || !(await user.isPasswordMatch(password))) {
-        throw new ApiError(
-            httpStatus.UNAUTHORIZED,
-            "Incorrect email or password"
-        );
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
     }
     return user;
 };
@@ -32,10 +29,7 @@ const logout = async (refreshToken) => {
 
 const refreshAuth = async (refreshToken) => {
     try {
-        const refreshTokenDoc = await tokenService.verifyToken(
-            refreshToken,
-            tokenTypes.REFRESH
-        );
+        const refreshTokenDoc = await tokenService.verifyToken(refreshToken, tokenTypes.REFRESH);
         const user = await userService.getUserById(refreshTokenDoc.user);
         if (!user) {
             throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -50,10 +44,7 @@ const refreshAuth = async (refreshToken) => {
 
 const verifyEmail = async (verifyEmailToken) => {
     try {
-        const verifyEmailTokenDoc = await tokenService.verifyToken(
-            verifyEmailToken,
-            tokenTypes.VERIFY_EMAIL
-        );
+        const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
         const user = await userService.getUserById(verifyEmailTokenDoc.user);
 
         if (!user) {
@@ -70,10 +61,7 @@ const verifyEmail = async (verifyEmailToken) => {
             isEmailVerified: true,
         });
     } catch (error) {
-        throw new ApiError(
-            httpStatus.UNAUTHORIZED,
-            "Email verification failed"
-        );
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
     }
 };
 

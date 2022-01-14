@@ -6,12 +6,6 @@ const userController = require("../../controllers/user.controller");
 
 const router = express.Router();
 
-router
-    .route("/:userId")
-    .get(
-        auth("getUsers"),
-        validate(userValidation.getUser),
-        userController.getUser
-    );
+router.route("/:userId").get(auth("getUsers"), validate(userValidation.getUser), userController.getUser);
 
 module.exports = router;

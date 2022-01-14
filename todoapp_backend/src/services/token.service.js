@@ -40,31 +40,12 @@ const verifyToken = async (token, type) => {
 };
 
 const generateAuthTokens = async (user) => {
-    const accessTokenExpires = dayjs().add(
-        config.jwt.accessExpirationMinutes,
-        "minutes"
-    );
-    const accessToken = generateToken(
-        user.id,
-        accessTokenExpires,
-        tokenTypes.ACCESS
-    );
+    const accessTokenExpires = dayjs().add(config.jwt.accessExpirationMinutes, "minutes");
+    const accessToken = generateToken(user.id, accessTokenExpires, tokenTypes.ACCESS);
 
-    const refreshTokenExpires = dayjs().add(
-        config.jwt.refreshExpirationDays,
-        "days"
-    );
-    const refreshToken = generateToken(
-        user.id,
-        refreshTokenExpires,
-        tokenTypes.REFRESH
-    );
-    await saveToken(
-        refreshToken,
-        user.id,
-        refreshTokenExpires,
-        tokenTypes.REFRESH
-    );
+    const refreshTokenExpires = dayjs().add(config.jwt.refreshExpirationDays, "days");
+    const refreshToken = generateToken(user.id, refreshTokenExpires, tokenTypes.REFRESH);
+    await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
 
     return {
         access: {
@@ -79,21 +60,9 @@ const generateAuthTokens = async (user) => {
 };
 
 const generateVerifyEmailToken = async (user) => {
-    const verifyEmailTokenExpires = dayjs().add(
-        config.jwt.verifyEmailExpirationMinutes,
-        "minutes"
-    );
-    const verifyEmailToken = generateToken(
-        user.id,
-        verifyEmailTokenExpires,
-        tokenTypes.VERIFY_EMAIL
-    );
-    await saveToken(
-        verifyEmailToken,
-        user.id,
-        verifyEmailTokenExpires,
-        tokenTypes.VERIFY_EMAIL
-    );
+    const verifyEmailTokenExpires = dayjs().add(config.jwt.verifyEmailExpirationMinutes, "minutes");
+    const verifyEmailToken = generateToken(user.id, verifyEmailTokenExpires, tokenTypes.VERIFY_EMAIL);
+    await saveToken(verifyEmailToken, user.id, verifyEmailTokenExpires, tokenTypes.VERIFY_EMAIL);
     return verifyEmailToken;
 };
 

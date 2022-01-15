@@ -347,16 +347,6 @@ describe("Users", () => {
                 .send(pick(todoOne, ["name", "isCompleted"]))
                 .expect(httpStatus.UNAUTHORIZED);
         });
-
-        test("Should return 404 if list not found", () => {
-            return request(app)
-                .patch(todoRoute(userOne._id, mongoose.Types.ObjectId(), todoOne._id))
-                .send(pick(todoOne, ["name", "isCompleted"]))
-                .set({
-                    Authorization: `Bearer ${useOneAccessToken}`,
-                })
-                .expect(httpStatus.NOT_FOUND);
-        });
     });
 
     describe(`DELETE ${todoRoute()}`, () => {

@@ -15,7 +15,7 @@ const createTodo = {
 const getTodos = {
     params: Joi.object().keys({
         userId: Joi.custom(objectId).required(),
-        listId: Joi.custom(objectId).required(),
+        listId: Joi.custom(objectId),
     }),
     query: Joi.object().keys({
         status: Joi.string().valid("all", "completed", "incomplete").default("all"),
@@ -29,7 +29,7 @@ const updateTodo = {
     }),
     params: Joi.object().keys({
         userId: Joi.custom(objectId).required(),
-        listId: Joi.custom(objectId).required(),
+        listId: Joi.custom(objectId),
         todoId: Joi.custom(objectId).required(),
     }),
 };
@@ -37,7 +37,7 @@ const updateTodo = {
 const deleteTodo = {
     params: Joi.object().keys({
         userId: Joi.custom(objectId).required(),
-        listId: Joi.custom(objectId).required(),
+        listId: Joi.custom(objectId),
         todoId: Joi.custom(objectId).required(),
     }),
 };

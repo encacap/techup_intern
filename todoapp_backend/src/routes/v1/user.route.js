@@ -22,6 +22,12 @@ router
     .get(auth(), validate(todoValidation.getTodos), todoController.getTodos)
     .post(auth(), validate(todoValidation.createTodo), todoController.createTodo);
 
+router.route("/:userId/todos").get(auth(), validate(todoValidation.getTodos), todoController.getTodos);
+router
+    .route("/:userId/todos/:todoId")
+    .patch(auth(), validate(todoValidation.updateTodo), todoController.updateTodo)
+    .delete(auth(), validate(todoValidation.deleteTodo), todoController.deleteTodo);
+
 router
     .route("/:userId/lists/:listId/todos/:todoId")
     .patch(auth(), validate(todoValidation.updateTodo), todoController.updateTodo)

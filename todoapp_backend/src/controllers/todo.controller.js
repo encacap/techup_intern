@@ -31,7 +31,7 @@ const getTodos = catchAsync(async (req, res) => {
         }
     }
 
-    const todos = await todoService.getTodos(user.id, listId, filters);
+    const todos = await todoService.getTodos({ user: user.id, list: listId, ...filters });
     res.status(httpStatus.OK).json(todos);
 });
 

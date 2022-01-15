@@ -41,6 +41,7 @@ const deleteListById = async (listId) => {
 module.exports = {
     createList,
     getListsByUserId,
+    getListById,
     updateListById,
     deleteListById,
 };

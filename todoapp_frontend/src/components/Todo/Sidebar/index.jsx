@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { AddCircle, User } from "iconsax-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 

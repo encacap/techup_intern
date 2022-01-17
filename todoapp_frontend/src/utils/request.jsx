@@ -2,15 +2,12 @@ import axios from "axios";
 import storage from "./storage";
 
 const createInstance = () => {
-    const accessToken = storage.get("accessToken") || {};
-    const refreshToken = storage.get("refreshToken") || {};
-
     const instance = axios.create({
         baseURL: "http://localhost:2000/v1/",
         timeout: 5000,
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken.token}`,
+            Authorization: `Bearer ${storage.get("accessToken")?.token}`,
         },
     });
 
@@ -25,7 +22,7 @@ const createInstance = () => {
 
             if (!status) return Promise.reject(error);
             if (status !== 401 && originalConfigs.retry) return Promise.reject(error);
-            if (!refreshToken.token) return Promise.reject(error);
+            if (!storage.get("refreshToken")?.token) return Promise.reject(error);
 
             originalConfigs.retry = true;
 
@@ -33,7 +30,7 @@ const createInstance = () => {
                 const { data } = await axios.post(
                     "auth/refresh-tokens",
                     {
-                        refreshToken: refreshToken.token,
+                        refreshToken: storage.get("refreshToken")?.token,
                     },
                     originalConfigs
                 );

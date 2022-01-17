@@ -25,13 +25,14 @@ const Home = () => {
                     navigate("/accounts/verify-email");
                 }
             } catch (error) {
-                console.log(error);
+                console.log(error.response);
             }
         };
 
-        if (!accessToken || !user) {
+        if (!accessToken || Object.keys(user).length === 0) {
             navigate("/accounts/login", { replace: true });
         } else {
+            console.log("Run getUserInformation()...");
             getUserInformation();
         }
     }, [user, accessToken, navigate]);

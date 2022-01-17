@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as userActions from "../actions/user";
 import encacapLogo from "../assets/images/logo.svg";
 import Input from "../components/Common/Form/Input";
+const { API: APIConfigs } = require("../configs/configs");
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ const Login = () => {
         };
 
         try {
-            const { data } = await axios.post("http://localhost:2000/v1/auth/login", loginCredentials);
+            const { data } = await axios.post(`${APIConfigs.gateway}/auth/login`, loginCredentials);
             dispatch(userActions.setUser(data.user));
             dispatch(userActions.setAccessToken(data.tokens.access));
             dispatch(userActions.setRefreshToken(data.tokens.refresh));

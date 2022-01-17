@@ -22,17 +22,17 @@ const TodoItem = ({
                     name="complete"
                     className="mr-5 mt-0.5"
                     onChange={() => onMarkDone(todo.id)}
-                    checked={todo.isDone}
+                    checked={todo.isCompleted}
                 />
-                <span className={`${todo.isDone ? "line-through text-gray-400" : ""} ${isEditing && "hidden"}`}>
-                    {todo.job}
+                <span className={`${todo.isCompleted ? "line-through text-gray-400" : ""} ${isEditing && "hidden"}`}>
+                    {todo.name}
                 </span>
                 <form action="" className={`${!isEditing && "hidden"}`} onSubmit={(e) => onEdit(e)}>
                     <input
                         type="text"
                         name="edit_todo"
                         placeholder="What are you working on?"
-                        value={value !== null ? value : todo.job}
+                        value={value !== null ? value : todo.name}
                         onChange={onEditing}
                         onBlur={onCancelEdit}
                         className="border-none outline-none"

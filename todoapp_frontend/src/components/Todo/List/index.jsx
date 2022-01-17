@@ -3,24 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as actions from "../../../actions/todo";
 import TodoItem from "../Item";
+import { todoService } from "../../../services";
 
 const TodoList = () => {
     const { editingTodoId, editingTodoValue, todos } = useSelector((state) => state.todo);
+    const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const { filter = "all", listId } = useParams();
+
     const filteredTodos = todos
         .filter((todo) => {
             if (listId === "220400") return true;
-            return listId === todo.listId;
+            return listId === todo.list;
         })
         .filter((todo) => {
             if (!filter || filter === "all") {
                 return todo;
             } else if (filter === "unfinished") {
-                return !todo.isDone;
+                return !todo.isCompleted;
             }
-            return todo.isDone;
+            return todo.isCompleted;
         });
 
     useEffect(() => {
@@ -31,12 +34,14 @@ const TodoList = () => {
         editingInput.focus();
     }, [editingTodoId]);
 
-    const handleMarkDone = (todoId) => {
+    const handleMarkDone = async (todoId) => {
         const selectedTodo = todos.find((todo) => todo.id === todoId);
-        dispatch(actions.markTodoDone(todoId, !selectedTodo.isDone));
+        await todoService.updateTodoById(user.id, todoId, { isCompleted: !selectedTodo.isCompleted });
+        dispatch(actions.markTodoDone(todoId, !selectedTodo.isCompleted));
     };
 
-    const handleRemove = (todoId) => {
+    const handleRemove = async (todoId) => {
+        await todoService.deleteTodoById(user.id, todoId);
         dispatch(actions.removeTodo(todoId));
     };
 
@@ -44,10 +49,14 @@ const TodoList = () => {
         dispatch(actions.setEditingTodoId(todoId));
     };
 
-    const handleEdit = (e) => {
+    const handleEdit = async (e) => {
         e.preventDefault();
 
-        dispatch(actions.editTodo(editingTodoId, editingTodoValue));
+        const updatedTodo = await todoService.updateTodoById(user.id, editingTodoId, {
+            name: editingTodoValue,
+        });
+
+        dispatch(actions.editTodo(updatedTodo));
         dispatch(actions.setEditingTodoId(null));
         dispatch(actions.setEditingTodoValue(null));
     };

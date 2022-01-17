@@ -1,26 +1,23 @@
 import request from "../utils/request";
 
-const listsRoute = (userId) => `/users/${userId}/lists`;
-const listRoute = (userId, listId) => `${listsRoute(userId)}/${listId}`;
-
-const createList = async (userId, listBody) => {
-    return request.post(listsRoute(userId), listBody);
+const createTodo = async (userId, listId, todoBody) => {
+    return request.post(`/users/${userId}/lists/${listId}/todos`, todoBody);
 };
 
-const getLists = (userId) => {
-    return request.get(listsRoute(userId));
+const getTodos = async (userId) => {
+    return request.get(`/users/${userId}/todos`);
 };
 
-const updateListById = async (listId, listBody) => {
-    const { user: userId } = listBody;
-    const newList = await request.patch(listRoute(userId, listId), {
-        name: listBody.name,
-    });
-    return newList;
+const getTodosByListId = async (userId, listId) => {
+    return request.get(`/users/${userId}/lists/${listId}/todos`);
 };
 
-const deleteListById = async (userId, listId) => {
-    return request.delete(listRoute(userId, listId));
+const updateTodoById = async (userId, todoId, todoBody) => {
+    return request.patch(`/users/${userId}/todos/${todoId}`, todoBody);
 };
 
-export { createList, getLists, updateListById, deleteListById };
+const deleteTodoById = async (userId, todoId) => {
+    return request.delete(`/users/${userId}/todos/${todoId}`);
+};
+
+export { createTodo, getTodos, getTodosByListId, updateTodoById, deleteTodoById };

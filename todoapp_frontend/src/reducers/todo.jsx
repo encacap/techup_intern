@@ -15,6 +15,8 @@ import {
     SET_NEW_TODO,
     SET_SELECTED_LIST,
     SET_LISTS,
+    SET_TODOS,
+    SET_LOADING_LIST_STATUS,
 } from "../constants/todo";
 
 import storage from "../utils/storage";
@@ -36,6 +38,7 @@ const initialState = {
     ],
     selectedListId: null,
     editingList: null,
+    isLoadedList: false,
 };
 
 const todoReducer = (state = initialState, action) => {
@@ -50,6 +53,13 @@ const todoReducer = (state = initialState, action) => {
     };
 
     switch (type) {
+        case SET_TODOS: {
+            return {
+                ...state,
+                todos: payload,
+            };
+        }
+
         case SET_NEW_TODO: {
             return {
                 ...state,
@@ -74,7 +84,7 @@ const todoReducer = (state = initialState, action) => {
                 if (todo.id === todoId) {
                     return {
                         ...todo,
-                        isDone: action.payload.isDone,
+                        isCompleted: action.payload.isCompleted,
                     };
                 }
                 return todo;
@@ -89,13 +99,10 @@ const todoReducer = (state = initialState, action) => {
         }
 
         case EDIT_TODO: {
-            const { id: editedTodoId, job: newJob } = action.payload;
+            const updatedTodo = payload;
             const newTodos = state.todos.map((todo) => {
-                if (todo.id === editedTodoId) {
-                    return {
-                        ...todo,
-                        job: newJob,
-                    };
+                if (todo.id === updatedTodo.id) {
+                    return updatedTodo;
                 }
                 return todo;
             });
@@ -221,6 +228,13 @@ const todoReducer = (state = initialState, action) => {
             return {
                 ...state,
                 editingList: payload,
+            };
+        }
+
+        case SET_LOADING_LIST_STATUS: {
+            return {
+                ...state,
+                isLoadedList: payload,
             };
         }
 

@@ -13,9 +13,16 @@ import {
     SET_NEW_INPUT_STATUS,
     SET_NEW_LIST,
     SET_NEW_TODO,
-    SET_SELECTED_LIST,
     SET_LISTS,
+    SET_LOADING_LIST_STATUS,
+    SET_SELECTED_LIST,
+    SET_TODOS,
 } from "../constants/todo";
+
+export const setTodos = (todos) => ({
+    type: SET_TODOS,
+    payload: todos,
+});
 
 export const setNewTodo = (newTodo) => ({
     type: SET_NEW_TODO,
@@ -27,20 +34,17 @@ export const addNewTodo = (newTodo) => ({
     payload: newTodo,
 });
 
-export const markTodoDone = (todoId, isDone) => ({
+export const markTodoDone = (todoId, isCompleted) => ({
     type: MARK_TODO_DONE,
     payload: {
         id: todoId,
-        isDone,
+        isCompleted,
     },
 });
 
-export const editTodo = (todoId, newJob) => ({
+export const editTodo = (newTodo) => ({
     type: EDIT_TODO,
-    payload: {
-        id: todoId,
-        job: newJob,
-    },
+    payload: newTodo,
 });
 
 export const removeTodo = (todoId) => ({
@@ -104,4 +108,9 @@ export const setSelectedList = (listId) => ({
 export const setEditingList = (newName) => ({
     type: SET_EDITING_LIST,
     payload: newName,
+});
+
+export const setLoadingListStatus = (isLoading) => ({
+    type: SET_LOADING_LIST_STATUS,
+    payload: isLoading,
 });

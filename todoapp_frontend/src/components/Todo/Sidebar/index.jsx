@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import * as todoService from "../../../services/todo.service";
+import * as todoService from "../../../services/list.service";
 
 import * as todoActions from "../../../actions/todo";
 import * as userActions from "../../../actions/user";
@@ -12,7 +12,7 @@ import request from "../../../utils/request";
 import Button from "../../Common/Button";
 import styles from "./Sidebar.module.scss";
 
-const Sidebar = () => {
+const Sidebar = ({ disabled }) => {
     const { newList, lists, isShowAddListForm, selectedListId, editingList } = useSelector((state) => state.todo);
     const { user, refreshToken } = useSelector((state) => state.user);
     const dispatch = useDispatch();
@@ -128,7 +128,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="w-80 border-r-2 border-gray-100 p-10">
+        <div className="relative w-80 border-r-2 border-gray-100 p-10">
             <div className="flex border-2 border-transparent">
                 <div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full">
                     <User className="w-10" />

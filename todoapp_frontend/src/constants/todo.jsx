@@ -1,5 +1,6 @@
 export const SET_NEW_TODO = "SET_NEW_TODO";
 export const ADD_NEW_TODO = "ADD_NEW_TODO";
+export const SET_TODOS = "SET_TODOS";
 export const MARK_TODO_DONE = "MARK_TODO_DONE";
 export const EDIT_TODO = "EDIT_TODO";
 export const REMOVE_TODO = "REMOVE_TODO";
@@ -15,3 +16,4 @@ export const REMOVE_LIST = "REMOVE_LIST";
 export const EDIT_LIST = "EDIT_LIST";
 export const SET_SELECTED_LIST = "SET_SELECTED_LIST";
 export const SET_EDITING_LIST = "SET_EDITING_LIST";
+export const SET_LOADING_LIST_STATUS = "SET_LOADING_LIST_STATUS";

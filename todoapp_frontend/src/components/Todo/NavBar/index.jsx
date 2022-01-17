@@ -16,10 +16,10 @@ const TodoNavBar = () => {
     todos
         .filter((todo) => {
             if (listId === "220400") return true;
-            return listId === todo.listId;
+            return listId === todo.list;
         })
         .forEach((todo) => {
-            if (todo.isDone) finishedTodos += 1;
+            if (todo.isCompleted) finishedTodos += 1;
             else unfinishedTodos += 1;
         });
 

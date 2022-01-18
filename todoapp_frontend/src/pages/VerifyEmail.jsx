@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import Button from "../components/Common/Button";
 import request from "../utils/request";
 
 const VerifyEmail = () => {
@@ -50,12 +51,7 @@ const VerifyEmail = () => {
                 {isVerified ? (
                     <div>
                         <div>Congratulations! Your email has been verified.</div>
-                        <Link
-                            to="/"
-                            className="flex items-center justify-center mt-6 px-4 py-3 rounded-md border-blue-500 bg-blue-500 hover:bg-blue-600 cursor-pointer duration-100 text-white text-sm font-semibold"
-                        >
-                            Continue
-                        </Link>
+                        <Button to="/">Continue</Button>
                     </div>
                 ) : (
                     <div>

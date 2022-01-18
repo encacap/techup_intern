@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as userActions from "../actions/user";
 import encacapLogo from "../assets/images/logo.svg";
+import Button from "../components/Common/Button";
 import Input from "../components/Common/Form/Input";
 import request from "../utils/request";
 
@@ -37,7 +38,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex w-screen h-screen">
+        <div className="flex w-screen h-screen overflow-x-hidden p-10">
             <form
                 action=""
                 className="m-auto rounded-md border-2 border-gray-100 px-10 py-12"
@@ -83,18 +84,12 @@ const Login = () => {
                     />
                 </div>
                 <div className="flex items-center mt-5">
-                    <Link
-                        to="/accounts/login"
-                        className="mr-5 bg-gray-200 border-gray-300 rounded-md px-6 py-4 text-black text-sm font-semibold hover:bg-gray-300"
-                    >
+                    <Button to="/accounts/login" className="mr-5" colorType="secondary">
                         Login
-                    </Link>
-                    <button
-                        type="submit"
-                        className="flex-1 bg-blue-500 rounded-md px-6 py-4 text-white text-sm font-semibold hover:bg-blue-600"
-                    >
+                    </Button>
+                    <Button type="submit" className="flex-1">
                         Register
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

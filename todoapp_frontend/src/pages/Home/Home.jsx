@@ -28,7 +28,7 @@ const Home = () => {
                     navigate("/accounts/verify-email");
                 }
             } catch (error) {
-                console.log(error.response);
+                console.log(error.response || error);
             }
         };
 

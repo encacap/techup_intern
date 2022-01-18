@@ -213,7 +213,7 @@ const Sidebar = ({ disabled }) => {
                         </form>
                     )}
                 </div>
-                <Button onClick={handleClickAddButton} className="w-full">
+                <Button onClick={handleClickAddButton} className="w-full mt-7">
                     <AddCircle className="w-5 h-5 mr-2" variant="Outline" />
                     <div className="font-semibold text-sm">Create new list</div>
                 </Button>

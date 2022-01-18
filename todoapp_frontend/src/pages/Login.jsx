@@ -4,7 +4,10 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as userActions from "../actions/user";
 import encacapLogo from "../assets/images/logo.svg";
+
 import Input from "../components/Common/Form/Input";
+import Button from "../components/Common/Button";
+
 const { API: APIConfigs } = require("../configs/configs");
 
 const Login = () => {
@@ -86,18 +89,12 @@ const Login = () => {
                     </Input>
                 </div>
                 <div className="flex items-center mt-5">
-                    <Link
-                        to="/accounts/register"
-                        className="mr-5 bg-gray-200 border-gray-300 rounded-md px-6 py-4 text-black text-sm font-semibold hover:bg-gray-300"
-                    >
+                    <Button to="/accounts/register" className="mr-5" colorType="secondary">
                         Register
-                    </Link>
-                    <button
-                        type="submit"
-                        className="flex-1 bg-blue-500 rounded-md px-6 py-4 text-white text-sm font-semibold hover:bg-blue-600"
-                    >
+                    </Button>
+                    <Button type="submit" className="flex-1 font-semibold text-sm">
                         Login
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import encacapLogo from "../assets/images/logo.svg";
+import Button from "../components/Common/Button";
 import Input from "../components/Common/Form/Input";
 import request from "../utils/request";
 
@@ -149,26 +150,19 @@ const Login = () => {
                                 />
                             </div>
                             <div className="flex items-center mt-5">
-                                <button
-                                    type="submit"
-                                    className="flex-1 bg-blue-500 rounded-md px-6 py-3 text-white text-sm font-semibold hover:bg-blue-600"
-                                    disabled={isLoading}
-                                >
+                                <Button type="submit" className="flex-1" disabled={isLoading}>
                                     Reset your password
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     ) : (
                         <div className="m-auto rounded-md border-2 border-gray-100 px-10 py-12" style={{ width: 480 }}>
                             <div className="border-2 bg-green-100 border-green-500 rounded-md px-6 py-3 font-semibold text-green-500">
-                                Success! Your password has been changed. You can login with new password now.
+                                Success! Your password has been changed. You can login now with your new password.
                             </div>
-                            <Link
-                                to="/accounts/login"
-                                className="block bg-blue-500 rounded-md px-6 py-3 text-white text-sm font-semibold hover:bg-blue-600 text-center mt-5"
-                            >
+                            <Button to="/accounts/login" className="block mt-5">
                                 Login
-                            </Link>
+                            </Button>
                         </div>
                     )}
                 </div>

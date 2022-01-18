@@ -41,13 +41,11 @@ const TodoForm = ({ disabled }) => {
             className={`relative border-2 ${isNewInputFocused ? "border-blue-500" : "border-gray-100"} rounded-md flex`}
             onSubmit={handleSubmit}
         >
-            {disabled && (
-                <div className="absolute top-0 right-16 bottom-0 left-0 rounded-md bg-white bg-opacity-70"></div>
-            )}
+            {disabled && <div className="absolute top-0 right-0 bottom-0 left-0 rounded-md"></div>}
             <input
                 type="text"
                 placeholder="What do you want?"
-                className="w-96 px-6 py-4 rounded-l-md outline-none"
+                className="w-full px-6 py-4 rounded-l-md outline-none"
                 value={newTodo}
                 onInput={handleInput}
                 onFocus={handleFocus}

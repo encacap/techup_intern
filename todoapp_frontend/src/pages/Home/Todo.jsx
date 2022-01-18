@@ -15,9 +15,9 @@ const Todo = () => {
         <>
             {user?.id ? (
                 <div className="w-screen h-screen flex">
-                    <div className="flex m-auto border-2 border-gray-100 rounded-md">
+                    <div className="flex w-full h-full">
                         <TodoSidebar list={params.listId} />
-                        <div className="p-10">
+                        <div className="p-10 w-full">
                             <TodoForm disabled={selectedList?.isDefault === true} />
                             <Routes>
                                 <Route

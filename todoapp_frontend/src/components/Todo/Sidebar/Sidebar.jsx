@@ -128,7 +128,7 @@ const Sidebar = ({ disabled }) => {
     };
 
     return (
-        <div className="relative w-80 border-r-2 border-gray-100 p-10">
+        <div className="relative w-96 border-r-2 border-gray-100 p-10">
             <div className="flex border-2 border-transparent">
                 <div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full">
                     <User className="w-10" />
@@ -181,19 +181,21 @@ const Sidebar = ({ disabled }) => {
                                     <>
                                         <div className="flex-1">{list.name}</div>
                                         <div className="absolute right-0 top-2.5 hidden group-hover:flex items-center bg-white text-gray-400 font-normal">
-                                            <div
-                                                className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
-                                                onClick={(e) => handleInputEditList(e, list.id)}
-                                            >
-                                                Edit
-                                            </div>
                                             {!list.isDefault && (
-                                                <div
-                                                    className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
-                                                    onClick={(e) => handleRemoveList(e, list.id)}
-                                                >
-                                                    Delete
-                                                </div>
+                                                <>
+                                                    <div
+                                                        className="mr-2 rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                                        onClick={(e) => handleInputEditList(e, list.id)}
+                                                    >
+                                                        Edit
+                                                    </div>
+                                                    <div
+                                                        className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200 duration-200"
+                                                        onClick={(e) => handleRemoveList(e, list.id)}
+                                                    >
+                                                        Delete
+                                                    </div>
+                                                </>
                                             )}
                                         </div>
                                     </>

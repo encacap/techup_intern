@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
-import TodoBody from "../components/Todo/Body";
-import TodoForm from "../components/Todo/Form";
-import TodoSidebar from "../components/Todo/Sidebar";
+import TodoBody from "../../components/Todo/Body";
+import TodoForm from "../../components/Todo/Form";
+import TodoSidebar from "../../components/Todo/Sidebar";
 
-const Home = () => {
+const Todo = () => {
     const params = useParams();
     const { user } = useSelector((state) => state.user);
     const { lists, isLoadedList } = useSelector((state) => state.todo);
@@ -43,4 +43,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Todo;

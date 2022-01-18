@@ -7,9 +7,16 @@ const createInstance = () => {
         timeout: 5000,
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${storage.get("accessToken")?.token}`,
         },
     });
+
+    instance.interceptors.request.use(
+        (config) => {
+            config.headers.Authorization = `Bearer ${storage.get("accessToken")?.token}`;
+            return config;
+        },
+        (error) => Promise.reject(error)
+    );
 
     instance.interceptors.response.use(
         (response) => response.data,

@@ -126,7 +126,7 @@ const Sidebar = ({ disabled }) => {
     };
 
     return (
-        <div className="relative w-96 border-r-2 border-gray-100 p-10">
+        <div className="relative flex-shrink-0 w-80 border-r-2 border-gray-100 p-10">
             <div className="flex border-2 border-transparent">
                 <div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full">
                     <User className="w-10" />

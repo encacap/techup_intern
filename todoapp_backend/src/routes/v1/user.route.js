@@ -9,29 +9,29 @@ const router = express.Router();
 
 router
     .route("/:userId/lists")
-    .get(auth(), validate(listValidation.getLists), listController.getLists)
-    .post(auth(), validate(listValidation.createList), listController.createList);
+    .get(auth("self"), validate(listValidation.getLists), listController.getLists)
+    .post(auth("self"), validate(listValidation.createList), listController.createList);
 
 router
     .route("/:userId/lists/:listId")
-    .patch(auth(), validate(listValidation.updateList), listController.updateList)
-    .delete(auth(), validate(listValidation.deleteList), listController.deleteList);
+    .patch(auth("self"), validate(listValidation.updateList), listController.updateList)
+    .delete(auth("self"), validate(listValidation.deleteList), listController.deleteList);
 
 router
     .route("/:userId/lists/:listId/todos")
-    .get(auth(), validate(todoValidation.getTodos), todoController.getTodos)
-    .post(auth(), validate(todoValidation.createTodo), todoController.createTodo);
+    .get(auth("self"), validate(todoValidation.getTodos), todoController.getTodos)
+    .post(auth("self"), validate(todoValidation.createTodo), todoController.createTodo);
 
-router.route("/:userId/todos").get(auth(), validate(todoValidation.getTodos), todoController.getTodos);
+router.route("/:userId/todos").get(auth("self"), validate(todoValidation.getTodos), todoController.getTodos);
 router
     .route("/:userId/todos/:todoId")
-    .patch(auth(), validate(todoValidation.updateTodo), todoController.updateTodo)
-    .delete(auth(), validate(todoValidation.deleteTodo), todoController.deleteTodo);
+    .patch(auth("self"), validate(todoValidation.updateTodo), todoController.updateTodo)
+    .delete(auth("self"), validate(todoValidation.deleteTodo), todoController.deleteTodo);
 
 router
     .route("/:userId/lists/:listId/todos/:todoId")
-    .patch(auth(), validate(todoValidation.updateTodo), todoController.updateTodo)
-    .delete(auth(), validate(todoValidation.deleteTodo), todoController.deleteTodo);
+    .patch(auth("self"), validate(todoValidation.updateTodo), todoController.updateTodo)
+    .delete(auth("self"), validate(todoValidation.deleteTodo), todoController.deleteTodo);
 
 router.route("/:userId").get(auth("getUsers"), validate(userValidation.getUser), userController.getUser);
 

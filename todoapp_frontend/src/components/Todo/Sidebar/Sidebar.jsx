@@ -104,14 +104,13 @@ const Sidebar = ({ disabled }) => {
 
         try {
             await todoService.deleteListById(user.id, selectedId);
+            if (listId === String(selectedId)) {
+                const defaultList = lists.find((list) => list.isDefault);
+                navigate(`/todos/${defaultList.id}/all`);
+            }
             dispatch(todoActions.removeList(selectedId));
         } catch (error) {
             console.log(error);
-        }
-
-        if (listId === String(selectedId)) {
-            const defaultList = lists.find((list) => list.isDefault);
-            navigate(`/todos/${defaultList.id}/all`);
         }
     };
 

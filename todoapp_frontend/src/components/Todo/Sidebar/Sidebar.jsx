@@ -58,6 +58,7 @@ const Sidebar = ({ disabled }) => {
             dispatch(todoActions.addNewList(savedNewList));
             dispatch(todoActions.setAddListFormStatus(false));
             dispatch(todoActions.setNewList(""));
+            navigate(`/todos/${savedNewList.id}/all`);
         } catch (error) {
             console.log({ error });
         }
@@ -80,8 +81,6 @@ const Sidebar = ({ disabled }) => {
     };
 
     const handleSubmitEditList = async (e, selectedId) => {
-        e.preventDefault();
-
         if (editingList) {
             try {
                 const selectedList = lists.find((list) => list.id === selectedId);

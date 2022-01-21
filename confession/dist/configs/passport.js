@@ -35,4 +35,6 @@ const jwtVerify = (payload, done) => __awaiter(void 0, void 0, void 0, function*
         done(error, false);
     }
 });
+const jwtStrategy = new passport_jwt_1.Strategy(jwtOptions, jwtVerify);
+exports.default = jwtStrategy;
 //# sourceMappingURL=passport.js.map

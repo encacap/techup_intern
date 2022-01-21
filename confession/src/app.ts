@@ -4,9 +4,11 @@ import express, { RequestHandler } from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import httpStatus from "http-status";
+import passport from "passport";
 
 import configs from "./configs/general";
 import morgan from "./configs/morgan";
+import jwtStrategy from "./configs/passport";
 import { errorConverter, errorHandler } from "./middlewares/error";
 import routes from "./routes";
 import ApiError from "./utils/apiError";
@@ -27,6 +29,10 @@ app.use(mongoSanitize());
 app.use(compression());
 
 app.use(cors());
+
+// JWT Authentication
+app.use(passport.initialize());
+passport.use("jwt", jwtStrategy);
 
 // Routes
 app.use("/", routes as RequestHandler);

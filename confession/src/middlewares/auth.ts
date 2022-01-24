@@ -12,7 +12,7 @@ interface User {
 const verifyCallback =
     (req: Request, resolve: (value?: unknown) => void, reject: (error: Error) => void, requiredRights: string[]) =>
     async (error: Error, user: User, info: object) => {
-        if (error || info || user) {
+        if (error || info || !user) {
             return reject(new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized"));
         }
 
@@ -36,15 +36,14 @@ const auth =
     (...requiredRight: string[]) =>
     async (req: Request, res: Response, next: NextFunction) => {
         return new Promise((resolve, reject) => {
-            passport
-                .authenticate("jwt", { session: false }, verifyCallback(req, resolve, reject, requiredRight))(
-                    req,
-                    res,
-                    next
-                )
-                .then(() => next())
-                .catch((error: Error) => next(error));
-        });
+            passport.authenticate("jwt", { session: false }, verifyCallback(req, resolve, reject, requiredRight))(
+                req,
+                res,
+                next
+            );
+        })
+            .then(() => next())
+            .catch((error: Error) => next(error));
     };
 
 export default auth;

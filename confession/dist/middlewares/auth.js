@@ -17,7 +17,7 @@ const passport_1 = __importDefault(require("passport"));
 const role_1 = require("../configs/role");
 const apiError_1 = __importDefault(require("../utils/apiError"));
 const verifyCallback = (req, resolve, reject, requiredRights) => (error, user, info) => __awaiter(void 0, void 0, void 0, function* () {
-    if (error || info || user) {
+    if (error || info || !user) {
         return reject(new apiError_1.default(http_status_1.default.UNAUTHORIZED, "Unauthorized"));
     }
     req.user = user;
@@ -34,11 +34,10 @@ const verifyCallback = (req, resolve, reject, requiredRights) => (error, user, i
 });
 const auth = (...requiredRight) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
-        passport_1.default
-            .authenticate("jwt", { session: false }, verifyCallback(req, resolve, reject, requiredRight))(req, res, next)
-            .then(() => next())
-            .catch((error) => next(error));
-    });
+        passport_1.default.authenticate("jwt", { session: false }, verifyCallback(req, resolve, reject, requiredRight))(req, res, next);
+    })
+        .then(() => next())
+        .catch((error) => next(error));
 });
 exports.default = auth;
 //# sourceMappingURL=auth.js.map

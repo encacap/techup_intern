@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ObjectId } from "mongoose";
 import { ConfessionDocument } from "../models/confession.model";
 import confessionService, { ConfessionBody } from "../services/confession.service";
 import catchAsync from "../utils/catchAsync";

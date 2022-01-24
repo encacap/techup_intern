@@ -29,7 +29,22 @@ const queryConfessions = async (filters: FilterQuery<object>): Promise<Confessio
     return confessions;
 };
 
+const getConfessionById = async (confessionId: string, isThrowError = true): Promise<ConfessionDocument> => {
+    const confession = (await Confession.findById(confessionId)) as ConfessionDocument;
+    if (!confession && isThrowError) {
+        throw new Error("Confession not found");
+    }
+    return confession;
+};
+
+const approveConfession = async (confessionId: string): Promise<ConfessionDocument> => {
+    const confession = await getConfessionById(confessionId);
+    confession.isApproved = true;
+    return confession.save();
+};
+
 export default {
     createConfession,
     queryConfessions,
+    approveConfession,
 };

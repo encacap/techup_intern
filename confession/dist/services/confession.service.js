@@ -31,8 +31,21 @@ const queryConfessions = (filters) => __awaiter(void 0, void 0, void 0, function
     const confessions = (yield confession_model_1.default.find(filters));
     return confessions;
 });
+const getConfessionById = (confessionId, isThrowError = true) => __awaiter(void 0, void 0, void 0, function* () {
+    const confession = (yield confession_model_1.default.findById(confessionId));
+    if (!confession && isThrowError) {
+        throw new Error("Confession not found");
+    }
+    return confession;
+});
+const approveConfession = (confessionId) => __awaiter(void 0, void 0, void 0, function* () {
+    const confession = yield getConfessionById(confessionId);
+    confession.isApproved = true;
+    return confession.save();
+});
 exports.default = {
     createConfession,
     queryConfessions,
+    approveConfession,
 };
 //# sourceMappingURL=confession.service.js.map

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongoose";
 import { ConfessionDocument } from "../models/confession.model";
 import confessionService, { ConfessionBody } from "../services/confession.service";
 import catchAsync from "../utils/catchAsync";
@@ -15,7 +16,14 @@ const getConfessions = catchAsync(async (req: Request, res: Response) => {
     res.send(confessions);
 });
 
+const updateConfession = catchAsync(async (req: Request, res: Response) => {
+    const { confessionId } = req.params;
+    const confession = await confessionService.approveConfession(confessionId);
+    res.send(confession);
+});
+
 export default {
     createConfession,
     getConfessions,
+    updateConfession,
 };

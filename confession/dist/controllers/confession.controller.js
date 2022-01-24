@@ -24,8 +24,14 @@ const getConfessions = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     const confessions = yield confession_service_1.default.queryConfessions({});
     res.send(confessions);
 }));
+const updateConfession = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { confessionId } = req.params;
+    const confession = yield confession_service_1.default.approveConfession(confessionId);
+    res.send(confession);
+}));
 exports.default = {
     createConfession,
     getConfessions,
+    updateConfession,
 };
 //# sourceMappingURL=confession.controller.js.map

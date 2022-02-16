@@ -1,3 +1,3 @@
 export const API = {
-    gateway: "http://localhost:2000/v1",
+    gateway: "https://todoapis.encacap.com/v1",
 };

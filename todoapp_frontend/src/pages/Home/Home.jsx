@@ -5,11 +5,11 @@ import Todo from "./Todo";
 
 import * as todoActions from "../../actions/todo";
 
-import { todoService, listService, userService } from "../../services";
+import { todoService, listService } from "../../services";
 
 const Home = () => {
     const { lists, isLoadedList } = useSelector((state) => state.todo);
-    const { user, accessToken } = useSelector((state) => state.user);
+    const { user } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -20,24 +20,24 @@ const Home = () => {
         }
     }, [user, navigate]);
 
-    useEffect(() => {
-        const getUserInformation = async () => {
-            try {
-                const { isEmailVerified } = await userService.getUserById(user.id);
-                if (isEmailVerified === false) {
-                    navigate("/accounts/verify-email");
-                }
-            } catch (error) {
-                console.log(error.response || error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserInformation = async () => {
+    //         try {
+    //             const { isEmailVerified } = await userService.getUserById(user.id);
+    //             if (isEmailVerified === false) {
+    //                 navigate("/accounts/verify-email");
+    //             }
+    //         } catch (error) {
+    //             console.log(error.response || error);
+    //         }
+    //     };
 
-        if (!accessToken || !user?.id) {
-            navigate("/accounts/login", { replace: true });
-        } else {
-            getUserInformation();
-        }
-    }, [accessToken, user, navigate]);
+    //     if (!accessToken || !user?.id) {
+    //         navigate("/accounts/login", { replace: true });
+    //     } else {
+    //         getUserInformation();
+    //     }
+    // }, [accessToken, user, navigate]);
 
     useEffect(() => {
         const getLists = async () => {

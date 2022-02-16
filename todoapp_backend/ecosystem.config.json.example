@@ -1,0 +1,26 @@
+{
+    "apps": [
+        {
+            "name": "todoapp_production",
+            "script": "src/index.js",
+            "instances": 1,
+            "autorestart": true,
+            "watch": false,
+            "time": true,
+            "env": {
+                "PORT": 2000,
+                "MONGODB_URL": "mongodb://username:password@127.0.0.1:27017/todoapp_production?authSource=admin",
+                "JWT_SECRET": "encacap",
+                "JWT_ACCESS_EXPIRATION_MINUTES": 3000,
+                "JWT_REFRESH_EXPIRATION_DAYS": 30,
+                "JWT_RESET_PASSWORD_EXPIRATION_MINUTES": 10,
+                "JWT_VERIFY_EMAIL_EXPIRATION_MINUTES": 10,
+                "SMTP_SERVER": "smtp_server",
+                "SMTP_PORT": 587,
+                "SMTP_USERNAME": "smtp_username",
+                "SMTP_PASSWORD": "smtp_password",
+                "SMTP_FROM": "Nguyen Khac Khanh <no_reply@support.encacap.com>"
+            }
+        }
+    ]
+}

@@ -5,7 +5,7 @@ import * as userActions from "../actions/user";
 import encacapLogo from "../assets/images/logo.svg";
 import Button from "../components/Common/Button";
 import Input from "../components/Common/Form/Input";
-import request from "../utils/request";
+import { guestRequest as request } from "../utils/request";
 
 const Login = () => {
     const [email, setEmail] = useState("");
